@@ -9,6 +9,15 @@ Perform stage 1:
 
 void stage1( char* X_name, int r, int c ) {
 
+
+  //Read the file; "r"-read only
+  FILE *file = fopen( X_name, "r" );
+    if ( file == NULL ) {
+      fprintf ( stderr, "Could not open the file\n" );
+    }
+
+
+
   // fill in this function with solution
 
 }
