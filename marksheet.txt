@@ -1,0 +1,72 @@
+- Replace any [...] with free text.
+- Replace the [_] with an X if you have completed that stage.
+- Replace the [_] with an * if you have attempted that stage, but you know
+  it doesn't work completely.  Document why you think it doesn't work, and
+  what you would do to fix the problem, at the end of the marksheet.
+
+-------------------------------------------------------------------------------
+
+1. Information
+
+name   : [...]
+email  : [...]
+year   : [...]
+course : [...]
+
+So that we can improve the assignment in the future, let us know roughly how
+long you spent on it (i.e., how much effort you put into it):
+
+effort : [...]
+
+-------------------------------------------------------------------------------
+
+2. Integrity
+
+I 
+
+[...]
+
+declare that this submission is entirely my own work, and that all sources
+used to help in the completion of the work have been declared below (include
+the names of anyone with whom this coursework was discussed in detail):
+
+[...]
+
+-------------------------------------------------------------------------------
+
+3. Marking
+
+Note that the marks allocated for each stage are *rough guidelines* only.  At
+least some marks will be set aside for hard to quantify features (e.g., the
+quality, style and efficiency of a solution) with the mark scheme below mainly
+relating to functional correctness.
+
+    Stage 1 : Implemented 
+[_]           - suitable data structure                              ( 10%)
+[_]           - read, write and access functions                     ( 10%)
+
+[_] Stage 2 : Implemented matrix transpose                           ( 10%)
+
+[_] Stage 3 : Implemented matrix addition                            ( 10%)
+
+[_] Stage 4 : Implemented matrix multiplication                      ( 20%)
+
+[_] Stage 5 : Implemented matrix chain multiplication                ( 20%)
+
+    Extra   : Efficiency of stages 2 to 5 in comparison with cohort  ( 20%)
+
+                                                                     ------
+                                                                     (100%)
+
+-------------------------------------------------------------------------------
+
+4. Documentation
+
+Any other documentation, notes or comments that you think are important 
+(e.g., which aren't covered elsewhere in the submission) should go here:
+
+-------------------------------------------------------------------------------
+
+[...]
+
+
