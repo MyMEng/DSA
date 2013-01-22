@@ -29,3 +29,9 @@ void checkMem( void *check )
     exit( EXIT_FAILURE );
   }
 }
+
+//Get ints from string of chars
+void fillWithNo(int *tmpint, char *tmpstr)
+{
+
+}

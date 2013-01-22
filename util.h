@@ -30,4 +30,6 @@ void freeMatrixMemory( Matrix *mx );
 
 void checkMem( void *check );
 
+void fillWithNo(int *tmpint, char *tmpstr);
+
 #endif

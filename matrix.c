@@ -9,7 +9,8 @@ Perform stage 1:
 
 void stage1( char* X_name, int r, int c ) {
 
-  char temp[BUFFSIZE];
+  char tempstr[BUFFSIZE];
+  int tempint[3];
   time_t t1, t2;
   t1 = clock(  );
 
@@ -23,8 +24,11 @@ void stage1( char* X_name, int r, int c ) {
     exit ( EXIT_FAILURE );
   } else {
     //Read the firs valid line of file to know the dimmensions of matrix
-    if ( fscanf( file, "%s\n", temp ) != EOF )
+    if ( fscanf( file, "%s\n", tempstr ) != EOF )
     {
+      //Rearange first read line
+      fillWithNo(tempint, tempstr);
+      
     } else {
       fprintf ( stderr, "File empty.\n" );
       exit (EXIT_FAILURE);
