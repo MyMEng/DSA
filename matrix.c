@@ -9,12 +9,53 @@ Perform stage 1:
 
 void stage1( char* X_name, int r, int c ) {
 
+  char temp[BUFFSIZE];
+  time_t t1, t2;
+  t1 = clock(  );
+
+  //number of non-0 elements in matrix
+  int n = 0;
 
   //Read the file; "r"-read only
   FILE *file = fopen( X_name, "r" );
-    if ( file == NULL ) {
-      fprintf ( stderr, "Could not open the file\n" );
+  if ( file == NULL ) {
+    fprintf ( stderr, "Could not open the file.\n" );
+    exit ( EXIT_FAILURE );
+  } else {
+    //Read the firs valid line of file to know the dimmensions of matrix
+    if ( fscanf( file, "%s\n", temp ) != EOF )
+    {
+    } else {
+      fprintf ( stderr, "File empty.\n" );
+      exit (EXIT_FAILURE);
     }
+    
+  }
+
+  //Check number of non-empty lines in file
+  n = numberOfLines(file);
+
+  //Allocate space for matrix
+  Matrix *sparseMx = calloc( 1, sizeof( Matrix ) );
+  checkMem( sparseMx );
+  sparseMx->val = calloc( 1, n * sizeof( int ) ); //+1 remember about '\0'
+  //sparseMx->col_ind;
+  //sparseMx->row_ptr;
+
+  t2 = clock(  );
+  printf("number of non-empty lines: %i\nTime elapsed %.5fs\n",
+    n, ( difftime( t2, t1 ) / CLOCKS_PER_SEC ) );
+
+  //Read the matrix into the structure
+  //
+  //Write the matrix to the file
+  //
+  //Acces the matrix data
+
+  //Free the memory after data structure
+  freeMatrixMemory( sparseMx );
+
+  fclose( file );
 
 
 
