@@ -40,11 +40,11 @@ void stage1( char* X_name, int r, int c ) {
   n = numberOfLines(file);
 
   //Allocate space for matrix
-  Matrix *sparseMx = calloc( 1, sizeof( Matrix ) );
-  checkMem( sparseMx );
-  sparseMx->val = calloc( 1, n * sizeof( int ) ); //+1 remember about '\0'
-  //sparseMx->col_ind;
-  //sparseMx->row_ptr;
+  Matrix *matrixInstance = makeDataStructure(n, tempint);
+
+  //Read data into a structure and sort them
+  organiseData(matrixInstance, file);
+
 
   t2 = clock(  );
   printf("number of non-empty lines: %i\nTime elapsed %.5fs\n",
@@ -54,16 +54,12 @@ void stage1( char* X_name, int r, int c ) {
   //
   //Write the matrix to the file
   //
-  //Acces the matrix data
+  //Acces the matrix data - print stdout - element - elements of row - elements of column
 
   //Free the memory after data structure
-  freeMatrixMemory( sparseMx );
+  freeMatrixMemory( matrixInstance );
 
   fclose( file );
-
-
-
-  // fill in this function with solution
 
 }
 

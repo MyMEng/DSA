@@ -12,11 +12,14 @@
 #include  <string.h>
 #include    <time.h>
 
-//Structure that represents a single matrix stored in 'Compressed sparse row'
+//Structure that represents a single matrix stored in 'Compressed sparse column'
 typedef struct MatrixTag {
   //Size of matrix
   int rows;
   int columns;
+
+  //Number of non-zero entries
+  int quantity;
 
   //Content of matrix
   int *val;
@@ -31,5 +34,9 @@ void freeMatrixMemory( Matrix *mx );
 void checkMem( void *check );
 
 void fillWithNo(int *tmpint, char *tmpstr);
+
+Matrix* makeDataStructure(int n, int *tempint);
+
+void organiseData( Matrix *matrix, FILE *file);
 
 #endif

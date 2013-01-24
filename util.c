@@ -33,5 +33,36 @@ void checkMem( void *check )
 //Get ints from string of chars
 void fillWithNo(int *tmpint, char *tmpstr)
 {
+  //How many arguments were read
+  int id = 0;
 
+  id = sscanf ( tmpstr, "%d,%d,%d/n", &tmpint[0], &tmpint[1], &tmpint[2]);
+
+  //Accept ony if 2 or 3 elements have been read(valid file formatting) 
+  if( ( id != 2 ) && ( id != 3 ) )
+  {
+    fprintf( stderr, "Bad file formatting.\n" );
+    exit( EXIT_FAILURE );
+  }
+}
+
+  Matrix* makeDataStructure(int n, int *tempint)
+  {
+    Matrix *sparseMx = calloc( 1, sizeof( Matrix ) );
+    checkMem( sparseMx );
+    sparseMx->rows = tempint[0];
+    sparseMx->columns = tempint[1];
+    sparseMx->quantity = n;
+    sparseMx->val = calloc( 1, sparseMx->quantity * sizeof( int ) ); //+1 remember about '\0'
+    checkMem( sparseMx->val );
+    sparseMx->col_ind = calloc( 1, sparseMx->columns * sizeof( int ) );
+    checkMem( sparseMx->col_ind );
+    sparseMx->row_ptr = calloc( 1, sparseMx->quantity * sizeof( int ) );
+    checkMem( sparseMx->row_ptr );
+    return sparseMx;
+  }
+
+void organiseData( Matrix *matrix, FILE *file)
+{
+  
 }
