@@ -48,7 +48,7 @@ void stage1( char* X_name, int r, int c ) {
   organiseData(matrixInstance, file);
 
   //Data rerieval
-  print(matrixInstance, c, r);
+  print(matrixInstance, r, c);
 
   //Free the memory after data structure
   freeMatrixMemory( matrixInstance );

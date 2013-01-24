@@ -55,10 +55,10 @@ void fillWithNo(int *tmpint, char *tmpstr)
     sparseMx->quantity = n;
     sparseMx->val = calloc( 1, sparseMx->quantity * sizeof( int ) );//+1 remember about '\0'
     checkMem( sparseMx->val );
-    sparseMx->col_ind = calloc( 1, sparseMx->columns * sizeof( int ) );
-    checkMem( sparseMx->col_ind );
-    sparseMx->row_ptr = calloc( 1, sparseMx->quantity * sizeof( int ) );
+    sparseMx->row_ptr = calloc( 1, ( sparseMx->rows + 1 ) * sizeof( int ) );
     checkMem( sparseMx->row_ptr );
+    sparseMx->col_ind = calloc( 1, sparseMx->quantity * sizeof( int ) );
+    checkMem( sparseMx->col_ind );
     return sparseMx;
   }
 
@@ -66,11 +66,39 @@ void organiseData( Matrix *matrix, FILE *file)
 {
   char tempchar[BUFFSIZE];
   int tempint[3];
-  while( fscanf( file, "%s\n", tempchar ) != EOF )
+
+  //Current element in row
+  int n = 0;
+
+  //Gather elements with specific row index
+  //int tempCompresedRow[matrix->columns][2];
+
+  matrix->row_ptr[0] = 0;
+
+  for(int i = 0; i < matrix->columns; i++)
   {
-    fillWithNo( tempint, tempchar );
-    //printf("%d , %d , %d \n", tempint[0], tempint[1], tempint[2]);
+    while( fscanf( file, "%s\n", tempchar ) != EOF )
+    {
+      fillWithNo( tempint, tempchar );
+
+      if( tempint[0] == i )
+      {
+       //tempCompresedRow[n][0] = tempint[1];
+       //tempCompresedRow[n][1] = tempint[2];
+       matrix->col_ind[n] = tempint[1];
+       matrix->val[n] = tempint[2];
+       n++;
+      }
+      //printf("%d , %d , %d \n", tempint[0], tempint[1], tempint[2]);
+    }
+
+    //POSORTOWAC WEDLUG KOLUMNY
+    matrix->row_ptr[i + 1] = n;
+
+    rewind(file);
+    fillWithNo( tempint, tempchar );//?????Bedzie mi wczytywalo rozmiary maciezy
   }
+
 }
 
 //Write the matrix to the file
@@ -92,7 +120,36 @@ void writeMatrixInFile( Matrix *matrix, char *fileName )
 
 //Acces the matrix data - print stdout
 //Element - elements of row - elements of column
-void print( Matrix *matrix, int c, int r)
+void print( Matrix *matrix, int r, int c)
 {
+  int b = ( matrix->row_ptr[r + 1] - 1 );
+  int a = matrix->row_ptr[r];
+
+  {//Print row r
+    if( 0 == matrix->col_ind[a] )
+    {
+      printf("%d", matrix->val[a]);
+      a++;
+    } else {
+      printf("0");
+    }
+
+    for( int i = 1; i < matrix->columns; i++ )
+    {
+      if( i == matrix->col_ind[a] )
+      {
+        printf(",%d", matrix->val[a]);
+        a++;
+      } else {
+        printf(",0");
+      }
+      
+    }
+    printf("\n");
+  }
+
+  {//Print column c
+
+  }
 
 }
