@@ -53,7 +53,7 @@ void fillWithNo(int *tmpint, char *tmpstr)
     sparseMx->rows = tempint[0];
     sparseMx->columns = tempint[1];
     sparseMx->quantity = n;
-    sparseMx->val = calloc( 1, sparseMx->quantity * sizeof( int ) ); //+1 remember about '\0'
+    sparseMx->val = calloc( 1, sparseMx->quantity * sizeof( int ) );//+1 remember about '\0'
     checkMem( sparseMx->val );
     sparseMx->col_ind = calloc( 1, sparseMx->columns * sizeof( int ) );
     checkMem( sparseMx->col_ind );
@@ -64,5 +64,35 @@ void fillWithNo(int *tmpint, char *tmpstr)
 
 void organiseData( Matrix *matrix, FILE *file)
 {
-  
+  char tempchar[BUFFSIZE];
+  int tempint[3];
+  while( fscanf( file, "%s\n", tempchar ) != EOF )
+  {
+    fillWithNo( tempint, tempchar );
+    //printf("%d , %d , %d \n", tempint[0], tempint[1], tempint[2]);
+  }
+}
+
+//Write the matrix to the file
+void writeMatrixInFile( Matrix *matrix, char *fileName )
+{
+  FILE *file = fopen( fileName, "a" );
+  if ( file == NULL ) {
+    fprintf ( stderr, "Could not open the file.\n" );
+    exit ( EXIT_FAILURE );
+  } else {
+    
+    int x, y, z;
+    fprintf( file, "%d,%d,%d/n", x, y, z );
+
+  }
+
+  fclose( file );
+}
+
+//Acces the matrix data - print stdout
+//Element - elements of row - elements of column
+void print( Matrix *matrix, int c, int r)
+{
+
 }

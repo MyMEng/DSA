@@ -23,6 +23,11 @@ void stage1( char* X_name, int r, int c ) {
     fprintf ( stderr, "Could not open the file.\n" );
     exit ( EXIT_FAILURE );
   } else {
+
+    //Check number of non-empty lines in file
+    n = numberOfLines(file);
+    rewind(file);
+
     //Read the firs valid line of file to know the dimmensions of matrix
     if ( fscanf( file, "%s\n", tempstr ) != EOF )
     {
@@ -36,30 +41,24 @@ void stage1( char* X_name, int r, int c ) {
     
   }
 
-  //Check number of non-empty lines in file
-  n = numberOfLines(file);
-
   //Allocate space for matrix
   Matrix *matrixInstance = makeDataStructure(n, tempint);
 
   //Read data into a structure and sort them
   organiseData(matrixInstance, file);
 
-
-  t2 = clock(  );
-  printf("number of non-empty lines: %i\nTime elapsed %.5fs\n",
-    n, ( difftime( t2, t1 ) / CLOCKS_PER_SEC ) );
-
-  //Read the matrix into the structure
-  //
-  //Write the matrix to the file
-  //
-  //Acces the matrix data - print stdout - element - elements of row - elements of column
+  //Data rerieval
+  print(matrixInstance, c, r);
 
   //Free the memory after data structure
   freeMatrixMemory( matrixInstance );
 
   fclose( file );
+
+
+  t2 = clock(  );
+  printf("number of non-empty lines: %i\nTime elapsed %.5fs\n",
+    n, ( difftime( t2, t1 ) / CLOCKS_PER_SEC ) );
 
 }
 

@@ -39,4 +39,8 @@ Matrix* makeDataStructure(int n, int *tempint);
 
 void organiseData( Matrix *matrix, FILE *file);
 
+void writeMatrixInFile( Matrix *matrix, char *fileName );
+
+void print( Matrix *matrix, int c, int r);
+
 #endif
