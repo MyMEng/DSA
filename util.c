@@ -80,15 +80,14 @@ void organiseData( Matrix *matrix, FILE *file)
 
       if( tempint[0] == i )
       {
-       //tempCompresedRow[n][0] = tempint[1];
-       //tempCompresedRow[n][1] = tempint[2];
        matrix->col_ind[n] = tempint[1];
        matrix->val[n] = tempint[2];
        n++;
       }
     }
 
-    //POSORTOWAC WEDLUG KOLUMNY
+    //TU POSORTOWAC WEDLUG KOLUMNY
+
     matrix->row_ptr[i + 1] = n;
 
     rewind(file);
