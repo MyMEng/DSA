@@ -106,12 +106,23 @@ void writeMatrixInFile( Matrix *matrix, char *fileName )
 {
   FILE *file = fopen( fileName, "a" );
   if ( file == NULL ) {
-    fprintf ( stderr, "Could not open the file.\n" );
+    fprintf ( stderr, "Could not write the file.\n" );
     exit ( EXIT_FAILURE );
   } else {
+    fprintf( file, "%d,%d\n", matrix->rows, matrix->columns );
     
-    int x, y, z;
-    fprintf( file, "%d,%d,%d/n", x, y, z );
+    int b;
+    int a;
+    
+    for (int i = 0; i < ( matrix->rows + 1); i++)
+    {
+      b = matrix->row_ptr[i + 1] - 1;
+      a = matrix->row_ptr[i];
+      for (int j = a; j <= b; j++)
+      {
+        fprintf( file, "%d,%d,%d\n", i, matrix->col_ind[j], matrix->val[j] );
+      }
+    }
 
   }
 
@@ -122,24 +133,46 @@ void writeMatrixInFile( Matrix *matrix, char *fileName )
 //Element - elements of row - elements of column
 void print( Matrix *matrix, int r, int c)
 {
+
+  if (r < 0 || r >= matrix->rows || c < 0 || c >= matrix->columns)
+  {
+      fprintf ( stderr, "Unexpected index.\n" );
+      exit (EXIT_FAILURE);
+  }
+
   int b = ( matrix->row_ptr[r + 1] - 1 );
   int a = matrix->row_ptr[r];
 
-  {//Print row r
-    if( 0 == matrix->col_ind[a] )
+  {//Print element (r, c)
+    int temp = 0;
+    for (int i = a; i <= b; i++)
     {
-      printf("%d", matrix->val[a]);
-      a++;
+      if(c == matrix->col_ind[i])
+      {
+        temp = matrix->val[i];
+        continue;
+      }
+    }
+    printf("%d\n", temp);
+  }
+
+  {//Print row r
+    int colId = a;
+
+    if( 0 == matrix->col_ind[colId] )
+    {
+      printf("%d", matrix->val[colId]);
+      colId++;
     } else {
       printf("0");
     }
 
     for( int i = 1; i < matrix->columns; i++ )
     {
-      if( i == matrix->col_ind[a] )
+      if( i == matrix->col_ind[colId] && colId <= b )
       {
-        printf(",%d", matrix->val[a]);
-        a++;
+        printf(",%d", matrix->val[colId]);
+        colId++;
       } else {
         printf(",0");
       }
@@ -148,8 +181,20 @@ void print( Matrix *matrix, int r, int c)
     printf("\n");
   }
 
-  {//Print column c
-
-  }
+  /*{//Print column c
+    int x;
+    int y;
+    for (int i = 0; i < matrix->columns; i++)
+    {
+      x = ( matrix->row_ptr[i + 1] - 1 );
+      y = matrix->row_ptr[i];
+      if(c == matrix->col_ind[i])
+      {
+        temp = matrix->val[i];
+        continue;
+      }
+    }
+    printf("%d\n", x);
+  }*/
 
 }

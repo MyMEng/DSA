@@ -55,6 +55,8 @@ void stage1( char* X_name, int r, int c ) {
 
   fclose( file );
 
+  writeMatrixInFile( matrixInstance, "LOL.txt" );
+
 
   t2 = clock(  );
   printf("number of non-empty lines: %i\nTime elapsed %.5fs\n",
