@@ -70,9 +70,6 @@ void organiseData( Matrix *matrix, FILE *file)
   //Current element in row
   int n = 0;
 
-  //Gather elements with specific row index
-  //int tempCompresedRow[matrix->columns][2];
-
   matrix->row_ptr[0] = 0;
 
   for(int i = 0; i < matrix->columns; i++)
@@ -89,7 +86,6 @@ void organiseData( Matrix *matrix, FILE *file)
        matrix->val[n] = tempint[2];
        n++;
       }
-      //printf("%d , %d , %d \n", tempint[0], tempint[1], tempint[2]);
     }
 
     //POSORTOWAC WEDLUG KOLUMNY
@@ -104,7 +100,7 @@ void organiseData( Matrix *matrix, FILE *file)
 //Write the matrix to the file
 void writeMatrixInFile( Matrix *matrix, char *fileName )
 {
-  FILE *file = fopen( fileName, "a" );
+  FILE *file = fopen( fileName, "w" );
   if ( file == NULL ) {
     fprintf ( stderr, "Could not write the file.\n" );
     exit ( EXIT_FAILURE );
@@ -114,7 +110,7 @@ void writeMatrixInFile( Matrix *matrix, char *fileName )
     int b;
     int a;
     
-    for (int i = 0; i < ( matrix->rows + 1); i++)
+    for (int i = 0; i < matrix->rows; i++)//?????????
     {
       b = matrix->row_ptr[i + 1] - 1;
       a = matrix->row_ptr[i];
@@ -125,7 +121,6 @@ void writeMatrixInFile( Matrix *matrix, char *fileName )
     }
 
   }
-
   fclose( file );
 }
 
@@ -181,20 +176,26 @@ void print( Matrix *matrix, int r, int c)
     printf("\n");
   }
 
-  /*{//Print column c
+  {//Print column c
     int x;
     int y;
-    for (int i = 0; i < matrix->columns; i++)
+    int tempcol;
+    for (int i = 0; i < matrix->rows; i++)//???????????
     {
-      x = ( matrix->row_ptr[i + 1] - 1 );
-      y = matrix->row_ptr[i];
-      if(c == matrix->col_ind[i])
+      y = matrix->row_ptr[i + 1] - 1;
+      x = matrix->row_ptr[i];
+      tempcol = 0;
+      for (int j = x; j <= y; j++)
       {
-        temp = matrix->val[i];
-        continue;
+            if(c == matrix->col_ind[j])
+            {
+              tempcol = matrix->val[j];
+              continue;
+            }
       }
+      printf("%d,", tempcol);
     }
-    printf("%d\n", x);
-  }*/
+    printf("\n");
+  }
 
 }
