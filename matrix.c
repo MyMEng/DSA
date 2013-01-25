@@ -52,7 +52,7 @@ void stage1( char* X_name, int r, int c ) {
   //Data rerieval
   print(matrixInstance, r, c);
 
-  writeMatrixInFile( matrixInstance, "LOL.txt" );
+  //writeMatrixInFile( matrixInstance, "LOL.txt" );
 
   //Free the memory after data structure
   freeMatrixMemory( matrixInstance );

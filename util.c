@@ -68,30 +68,36 @@ void organiseData( Matrix *matrix, FILE *file)
   int tempint[3];
 
   //Current element in row
-  int n = 0;
+  int cn = 0;
+  //Previous value of elements in row
+  int on = 0;
 
   matrix->row_ptr[0] = 0;
 
   for(int i = 0; i < matrix->columns; i++)
   {
+    on = cn;
     while( fscanf( file, "%s\n", tempchar ) != EOF )
     {
       fillWithNo( tempint, tempchar );
 
       if( tempint[0] == i )
       {
-       matrix->col_ind[n] = tempint[1];
-       matrix->val[n] = tempint[2];
-       n++;
+       matrix->col_ind[cn] = tempint[1];
+       matrix->val[cn] = tempint[2];
+       cn++;
       }
     }
 
-    //TU POSORTOWAC WEDLUG KOLUMNY
+    //Sort each row according to column number
+    insertSort(matrix, on, cn);
 
-    matrix->row_ptr[i + 1] = n;
+    matrix->row_ptr[i + 1] = cn;
 
     rewind(file);
-    fillWithNo( tempint, tempchar );//?????Bedzie mi wczytywalo rozmiary maciezy
+
+    //Avoid reading matrix size more than one time
+    fillWithNo( tempint, tempchar );
   }
 
 }
@@ -197,4 +203,25 @@ void print( Matrix *matrix, int r, int c)
     printf("\n");
   }
 
+}
+
+void insertSort( Matrix *mx, int a, int b )
+{
+  int colToIns;
+  int valToIns;
+  int valPos;
+  for ( int i = ( a + 1 ); i < b; i++ )
+  {
+    valPos = i;
+    colToIns = mx->col_ind[i];
+    valToIns = mx->val[i];
+    while( ( valPos > 0 ) && ( colToIns < mx->col_ind[valPos - 1] ) )
+    {
+      mx->col_ind[valPos] = mx->col_ind[valPos - 1];
+      mx->val[valPos] = mx->val[valPos - 1];
+      valPos--;
+    }
+    mx->col_ind[valPos] = colToIns;
+    mx->val[valPos] = valToIns;
+  }
 }

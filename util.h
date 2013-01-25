@@ -41,6 +41,8 @@ void organiseData( Matrix *matrix, FILE *file);
 
 void writeMatrixInFile( Matrix *matrix, char *fileName );
 
-void print( Matrix *matrix, int r, int c);
+void print( Matrix *matrix, int r, int c );
+
+void insertSort( Matrix *mx, int a, int b );
 
 #endif
