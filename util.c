@@ -233,3 +233,30 @@ void insertSort( Matrix *mx, int a, int b )
     mx->val[valPos] = valToIns;
   }
 }
+
+bool checkFile(FILE *file)
+{
+  if ( file == NULL )
+  {
+    fprintf ( stderr, "Could not open the file.\n" );
+    exit ( EXIT_FAILURE );
+  }
+  return true;
+}
+
+void initializeReading(FILE *file, int *num, int *tempint, char *tempstr)
+{
+  //Check number of non-empty lines in file
+  *num = numberOfLines(file);
+  rewind(file);
+
+  //Read the firs valid line of file to know the dimmensions of matrix
+  if( fscanf( file, "%s\n", tempstr ) != EOF )
+  {
+    //Rearange first read line
+    fillWithNo(tempint, tempstr);
+  } else {
+    fprintf ( stderr, "File empty.\n" );
+    exit (EXIT_FAILURE);
+  }
+}

@@ -21,26 +21,9 @@ void stage1( char* X_name, int r, int c ) {
 
   //Read the file; "r"-read only
   FILE *file = fopen( X_name, "r" );
-  if ( file == NULL ) {
-    fprintf ( stderr, "Could not open the file.\n" );
-    exit ( EXIT_FAILURE );
-  } else {
-
-    //Check number of non-empty lines in file
-    n = numberOfLines(file);
-    rewind(file);
-
-    //Read the firs valid line of file to know the dimmensions of matrix
-    if ( fscanf( file, "%s\n", tempstr ) != EOF )
-    {
-      //Rearange first read line
-      fillWithNo(tempint, tempstr);
-      
-    } else {
-      fprintf ( stderr, "File empty.\n" );
-      exit (EXIT_FAILURE);
-    }
-    
+  if( checkFile( file ) )
+  {
+   initializeReading( file, &n, tempint, tempstr ); 
   }
 
   //Allocate space for matrix
@@ -74,9 +57,28 @@ Perform stage 2:
 - then                     store  R in a file  named by R_name.
 */
 
-void stage2( char* R_name, char* X_name ) {
+void stage2( char* R_name, char* X_name )
+{
+  // time_t t1, t2;
+  // t1 = clock(  );
 
-  // fill in this function with solution
+  // //Read the file; "r"-read only
+  // FILE *file = fopen( R_name, "r" );
+  // if ( checkFile( file ) )
+  // {
+
+  //   writeMatrixInFile( matrixInstance, X_name );
+  // }
+
+  // //Free the memory after data structure
+  // freeMatrixMemory( matrixInstance );
+
+  // fclose( file );
+
+  // t2 = clock(  );
+
+  // printf("number of non-empty lines: %i\nTime elapsed %.5fs\n",
+  //   n, ( difftime( t2, t1 ) / CLOCKS_PER_SEC ) );
 
 }
 

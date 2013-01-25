@@ -55,4 +55,10 @@ void print( Matrix *matrix, int r, int c );
 //Sort elements between indeces a and b
 void insertSort( Matrix *mx, int a, int b );
 
+//Check whether file was opened without any error
+bool checkFile(FILE *file);
+
+//Prepare file to be read
+void initializeReading(FILE *file, int *num, int *tempint, char *tempstr);
+
 #endif
