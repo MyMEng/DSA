@@ -1,6 +1,5 @@
 #include "util.h"
 
-//Count number of lines in a non-empty file
 int numberOfLines(FILE *file)
 {
   //As max value of int is 65536 and there are three of these values plus
@@ -12,7 +11,6 @@ int numberOfLines(FILE *file)
   return counter;
 }
 
-//Free the memory after matrix structure
 void freeMatrixMemory( Matrix *mx )
 {
   free( mx->val );
@@ -21,7 +19,6 @@ void freeMatrixMemory( Matrix *mx )
   free( mx );
 }
 
-//Check whether memory was alloccated prroperly
 void checkMem( void *check )
 {
   if( check == NULL ) {
@@ -30,7 +27,6 @@ void checkMem( void *check )
   }
 }
 
-//Get ints from string of chars
 void fillWithNo(int *tmpint, char *tmpstr)
 {
   //How many arguments were read
@@ -46,20 +42,20 @@ void fillWithNo(int *tmpint, char *tmpstr)
   }
 }
 
-  Matrix* makeDataStructure(int n, int *tempint)
-  {
-    Matrix *sparseMx = calloc( 1, sizeof( Matrix ) );
-    checkMem( sparseMx );
-    sparseMx->rows = tempint[0];
-    sparseMx->columns = tempint[1];
-    sparseMx->quantity = n;
-    sparseMx->val = calloc( 1, sparseMx->quantity * sizeof( int ) );//+1 remember about '\0'
-    checkMem( sparseMx->val );
-    sparseMx->row_ptr = calloc( 1, ( sparseMx->rows + 1 ) * sizeof( int ) );
-    checkMem( sparseMx->row_ptr );
-    sparseMx->col_ind = calloc( 1, sparseMx->quantity * sizeof( int ) );
-    checkMem( sparseMx->col_ind );
-    return sparseMx;
+Matrix* makeDataStructure(int n, int *tempint)
+{
+  Matrix *sparseMx = calloc( 1, sizeof( Matrix ) );
+  checkMem( sparseMx );
+  sparseMx->rows = tempint[0];
+  sparseMx->columns = tempint[1];
+  sparseMx->quantity = n;
+  sparseMx->val = calloc( 1, sparseMx->quantity * sizeof( int ) );//+1 remember about '\0'
+  checkMem( sparseMx->val );
+  sparseMx->row_ptr = calloc( 1, ( sparseMx->rows + 1 ) * sizeof( int ) );
+  checkMem( sparseMx->row_ptr );
+  sparseMx->col_ind = calloc( 1, sparseMx->quantity * sizeof( int ) );
+  checkMem( sparseMx->col_ind );
+  return sparseMx;
   }
 
 void organiseData( Matrix *matrix, FILE *file)
@@ -102,7 +98,6 @@ void organiseData( Matrix *matrix, FILE *file)
 
 }
 
-//Write the matrix to the file
 void writeMatrixInFile( Matrix *matrix, char *fileName )
 {
   FILE *file = fopen( fileName, "w" );
@@ -115,7 +110,8 @@ void writeMatrixInFile( Matrix *matrix, char *fileName )
     int b;
     int a;
     
-    for (int i = 0; i < matrix->rows; i++)//?????????
+    //Overflow?
+    for (int i = 0; i < matrix->rows; i++)
     {
       b = matrix->row_ptr[i + 1] - 1;
       a = matrix->row_ptr[i];
@@ -129,15 +125,13 @@ void writeMatrixInFile( Matrix *matrix, char *fileName )
   fclose( file );
 }
 
-//Acces the matrix data - print stdout
-//Element - elements of row - elements of column
-void print( Matrix *matrix, int r, int c)
+void print( Matrix *matrix, int r, int c )
 {
 
-  if (r < 0 || r >= matrix->rows || c < 0 || c >= matrix->columns)
+  if ( r < 0 || r >= matrix->rows || c < 0 || c >= matrix->columns )
   {
       fprintf ( stderr, "Unexpected index.\n" );
-      exit (EXIT_FAILURE);
+      exit ( EXIT_FAILURE );
   }
 
   int b = ( matrix->row_ptr[r + 1] - 1 );
@@ -145,15 +139,15 @@ void print( Matrix *matrix, int r, int c)
 
   {//Print element (r, c)
     int temp = 0;
-    for (int i = a; i <= b; i++)
+    for ( int i = a; i <= b; i++ )
     {
-      if(c == matrix->col_ind[i])
+      if( c == matrix->col_ind[i] )
       {
         temp = matrix->val[i];
         continue;
       }
     }
-    printf("%d\n", temp);
+    printf( "%d\n", temp );
   }
 
   {//Print row r
@@ -161,46 +155,60 @@ void print( Matrix *matrix, int r, int c)
 
     if( 0 == matrix->col_ind[colId] )
     {
-      printf("%d", matrix->val[colId]);
+      printf( "%d", matrix->val[colId] );
       colId++;
     } else {
-      printf("0");
+      printf( "0" );
     }
 
     for( int i = 1; i < matrix->columns; i++ )
     {
       if( i == matrix->col_ind[colId] && colId <= b )
       {
-        printf(",%d", matrix->val[colId]);
+        printf( ",%d", matrix->val[colId] );
         colId++;
       } else {
-        printf(",0");
+        printf( ",0" );
       }
       
     }
-    printf("\n");
+    printf( "\n" );
   }
 
   {//Print column c
     int x;
     int y;
     int tempcol;
-    for (int i = 0; i < matrix->rows; i++)//???????????
+
+    //Overflow?
+    
+    tempcol = 0;
+    for ( int j = matrix->row_ptr[0]; j <= ( matrix->row_ptr[1] - 1 ); j++ )
+    {
+          if( c == matrix->col_ind[j] )
+          {
+            tempcol = matrix->val[j];
+            continue;
+          }
+    }
+    printf( "%d", tempcol );
+    
+    for ( int i = 1; i < matrix->rows; i++ )
     {
       y = matrix->row_ptr[i + 1] - 1;
       x = matrix->row_ptr[i];
       tempcol = 0;
-      for (int j = x; j <= y; j++)
+      for ( int j = x; j <= y; j++ )
       {
-            if(c == matrix->col_ind[j])
+            if( c == matrix->col_ind[j] )
             {
               tempcol = matrix->val[j];
               continue;
             }
       }
-      printf("%d,", tempcol);
+      printf( ",%d", tempcol );
     }
-    printf("\n");
+    printf( "\n" );
   }
 
 }
