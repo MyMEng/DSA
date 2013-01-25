@@ -19,38 +19,29 @@ void stage1( char* X_name, int r, int c ) {
 
   //Read the file; "r"-read only
   FILE *file = fopen( X_name, "r" );
-  if ( file == NULL ) {
+  if ( file == NULL )
+  {
     fprintf ( stderr, "Could not open the file.\n" );
     exit ( EXIT_FAILURE );
-  } else {
-
-    //Check number of non-empty lines in file
-    n = numberOfLines(file);
-    rewind(file);
-
-    //Read the firs valid line of file to know the dimmensions of matrix
-    if ( fscanf( file, "%s\n", tempstr ) != EOF )
-    {
-      //Rearange first read line
-      fillWithNo(tempint, tempstr);
-      
-    } else {
-      fprintf ( stderr, "File empty.\n" );
-      exit (EXIT_FAILURE);
-    }
-    
   }
+
+  //figure out number of non-zero elements in matrix, dimmensions of it,
+  //and put it into linklist which will be sorted
+  LinkList *tempList = readFile(file, &n, tempint); 
+
 
   //Allocate space for matrix
   Matrix *matrixInstance = makeDataStructure(n, tempint);
 
+
+
   //Read data into a structure and sort them
-  organiseData(matrixInstance, file);
+  //organiseData(matrixInstance, tempList);
 
   //Data rerieval
   print(matrixInstance, r, c);
 
-  writeMatrixInFile( matrixInstance, "LOL.txt" );
+  //writeMatrixInFile( matrixInstance, "LOL.txt" );
 
   //Free the memory after data structure
   freeMatrixMemory( matrixInstance );

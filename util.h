@@ -12,6 +12,14 @@
 #include  <string.h>
 #include    <time.h>
 
+//Structure for temporary storing data from file
+typedef struct LinkListTag {
+	int row;
+	int col;
+	int val;
+	struct LinkListTag *next;
+} LinkList;
+
 //Structure that represents a single matrix stored in 'Compressed sparse row'
 typedef struct MatrixTag {
   //Size of matrix
@@ -37,10 +45,14 @@ void fillWithNo(int *tmpint, char *tmpstr);
 
 Matrix* makeDataStructure(int n, int *tempint);
 
-void organiseData( Matrix *matrix, FILE *file);
+//void organiseData( Matrix *matrix, LinkList *tempList);
 
 void writeMatrixInFile( Matrix *matrix, char *fileName );
 
 void print( Matrix *matrix, int r, int c);
+
+void FreeLinkList( LinkList *root );
+
+LinkList *readFile(FILE *file, int *n, int *tempint);
 
 #endif

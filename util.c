@@ -62,39 +62,39 @@ void fillWithNo(int *tmpint, char *tmpstr)
     return sparseMx;
   }
 
-void organiseData( Matrix *matrix, FILE *file)
-{
-  char tempchar[BUFFSIZE];
-  int tempint[3];
+// void organiseData( Matrix *matrix, LinkList *tempList)
+// {
+//   char tempchar[BUFFSIZE];
+//   int tempint[3];
 
-  //Current element in row
-  int n = 0;
+//   //Current element in row
+//   int n = 0;
 
-  matrix->row_ptr[0] = 0;
+//   matrix->row_ptr[0] = 0;
 
-  for(int i = 0; i < matrix->columns; i++)
-  {
-    while( fscanf( file, "%s\n", tempchar ) != EOF )
-    {
-      fillWithNo( tempint, tempchar );
+//   for(int i = 0; i < matrix->columns; i++)
+//   {
+//     while( fscanf( file, "%s\n", tempchar ) != EOF )
+//     {
+//       fillWithNo( tempint, tempchar );
 
-      if( tempint[0] == i )
-      {
-       matrix->col_ind[n] = tempint[1];
-       matrix->val[n] = tempint[2];
-       n++;
-      }
-    }
+//       if( tempint[0] == i )
+//       {
+//        matrix->col_ind[n] = tempint[1];
+//        matrix->val[n] = tempint[2];
+//        n++;
+//       }
+//     }
 
-    //TU POSORTOWAC WEDLUG KOLUMNY
+//     //TU POSORTOWAC WEDLUG KOLUMNY
 
-    matrix->row_ptr[i + 1] = n;
+//     matrix->row_ptr[i + 1] = n;
 
-    rewind(file);
-    fillWithNo( tempint, tempchar );//?????Bedzie mi wczytywalo rozmiary maciezy
-  }
+//     rewind(file);
+//     fillWithNo( tempint, tempchar );//?????Bedzie mi wczytywalo rozmiary maciezy
+//   }
 
-}
+// }
 
 //Write the matrix to the file
 void writeMatrixInFile( Matrix *matrix, char *fileName )
@@ -196,5 +196,36 @@ void print( Matrix *matrix, int r, int c)
     }
     printf("\n");
   }
+
+}
+
+void FreeLinkList( LinkList *root )
+{
+  LinkList *old;
+  while( root != NULL )
+  {
+    old = root;
+    root = root->next;
+    free( old );
+  }
+}
+
+LinkList *readFile(FILE *file, int *n, int *tempint)
+{
+  char[] tempchar;
+  //Read header - matrix dimmension
+  if ( fscanf( file, "%s\n", tempstr ) == EOF )
+  {
+    fprintf ( stderr, "File empty.\n" );
+    exit (EXIT_FAILURE);
+  } else
+
+  while(  )
+  {
+
+  }
+      //Check number of non-empty lines in file
+    n = numberOfLines(file);
+      //Read the firs valid line of file to know the dimmensions of matrix
 
 }
