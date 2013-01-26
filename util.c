@@ -7,7 +7,12 @@ int numberOfLines(FILE *file)
   char temp[BUFFSIZE];
   int counter = 0;
 
+  fscanf( file, "%s\n", temp );
+
   while ( fscanf( file, "%s\n", temp ) != EOF ) counter++;
+
+  //printf("Lines: %d\n", counter);
+
   return counter;
 }
 
@@ -128,12 +133,15 @@ void writeMatrixInFile( Matrix *matrix, char *fileName )
     int a = 0;
     
     //Overflow?
-    for (int i = 0; i < matrix->rows; i++)
+    for (int i = 0; i < matrix->rows; ++i)
     {
       b = matrix->row_ptr[i + 1] - 1;
       a = matrix->row_ptr[i];
       for (int j = a; j <= b; j++)
       {
+
+        //printf("Counter: %d | a: %d | b: %d\n", i, a, b);
+
         fprintf( file, "%d,%d,%d\n", i, matrix->col_ind[j], matrix->val[j] );
         //printf("%d\n", j);
         //printf("%d | %d | %d\n", i, matrix->col_ind[j], matrix->val[j]);
@@ -298,6 +306,11 @@ Matrix* transposeMatrix( Matrix *matrix )
   {
     (workspace[matrix->col_ind[i]])++;
   }
+
+  //for (int i = 0; i <= matrix->columns; i++) printf("# of elements %d\n", workspace[i]);
+  //for (int i = 0; i < matrix->quantity; i++) printf("# of elements %d | val:%d\n", matrix->col_ind[i],matrix->val[i]);
+  //printf("%d\n", matrix->quantity);
+
   //cumulative sum
   int v = 0;
   for ( int i = 0; i < matrix->columns; i++ )
@@ -310,7 +323,7 @@ Matrix* transposeMatrix( Matrix *matrix )
   }
   transpose->row_ptr[matrix->columns] = v;
 
-  //  for (int i = 0; i < matrix->columns; ++i) printf("%d\n", workspace[i]);
+  //for (int i = 0; i <= matrix->columns; i++) printf("%d | %d\n", workspace[i], transpose->row_ptr[i]);
 
   //fill transpose with values and row indeces
   int w = 0;
@@ -319,8 +332,8 @@ Matrix* transposeMatrix( Matrix *matrix )
     for ( int j = matrix->row_ptr[i]; j < matrix->row_ptr[i + 1]; j++ )
     {
       //Place matrix(i,j) into transpose(j,i)
-      w = workspace[matrix->col_ind[j]]++;
-      transpose->col_ind[w] = i;
+      //w = workspace[matrix->col_ind[j]]++;
+      transpose->col_ind[w = workspace[matrix->col_ind[j]]++] = i;
       transpose->val[w] = matrix->val[j];
     }
   }

@@ -88,7 +88,7 @@ void stage2( char* R_name, char* X_name )
   freeMatrixMemory( matrixInstance );
 
 
-  print(transpose, 39, 95);
+  print(transpose, 0, 0);
 
 
   //write transpose to a file
@@ -101,6 +101,11 @@ void stage2( char* R_name, char* X_name )
 
   printf("number of non-empty lines: %i\nTime elapsed %.5fs\n",
     n, ( difftime( t2, t1 ) / CLOCKS_PER_SEC ) );
+
+//MOZNA WCZYTAC DO STORADZA PIERDOLAC REWINDOWANIE FEJLA - RAZ A POZADNIE
+//jak czytam linie z pliku to nie bawic sie w lapanie stringa tylko po prostu "\n"
+
+
 
 }
 
