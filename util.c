@@ -51,13 +51,16 @@ Matrix* makeDataStructure(int n, int *tempint, char c)
   sparseMx->quantity = n;
   sparseMx->val = calloc( 1, sparseMx->quantity * sizeof( int ) );//+1 remember about '\0'
   checkMem( sparseMx->val );
-  if ( c == 'r' )
+  if ( c == 'r' ) //row compressed form
   {
     sparseMx->row_ptr = calloc( 1, ( sparseMx->rows + 1 ) * sizeof( int ) );
     sparseMx->col_ind = calloc( 1, sparseMx->quantity * sizeof( int ) );
-  } else {
+  } else if( c == 'c' ) { //column compressed form
     sparseMx->row_ptr = calloc( 1, sparseMx->quantity * sizeof( int ) );
     sparseMx->col_ind = calloc( 1, ( sparseMx->columns + 1 ) * sizeof( int ) );
+  } else if( c == 'T' ) {
+    sparseMx->row_ptr = calloc( 1, ( sparseMx->columns + 1 ) * sizeof( int ) );
+    sparseMx->col_ind = calloc( 1, sparseMx->quantity * sizeof( int ) );
   }
   
   checkMem( sparseMx->row_ptr );
@@ -98,10 +101,8 @@ void organiseData( Matrix *matrix, FILE *file, char c )
 
     //Sort each row according to column number
     //You don't have to sort when you do a trnspose
-    if( c == 'T' )
+    if( c != 'T' )
     {
-
-    } else {
       insertSort( matrix, on, cn );
     }
 
@@ -281,12 +282,14 @@ void initializeReading(FILE *file, int *num, int *tempint, char *tempstr)
   }
 }
 
+
+
 Matrix* transposeMatrix( Matrix *matrix )
 {
   //allocate space
   int *workspace = calloc( 1, matrix->columns * sizeof( int ) );
   int temp[2] = {( matrix->columns ), ( matrix->rows )};
-  Matrix *transpose = makeDataStructure( matrix->quantity, temp, 'c');
+  Matrix *transpose = makeDataStructure( matrix->quantity, temp, 'T');
 
   //calculate collumn counts - compress columns | cumulative sum
   //
@@ -299,13 +302,13 @@ Matrix* transposeMatrix( Matrix *matrix )
   int v = 0;
   for ( int i = 0; i < matrix->columns; i++ )
   {
-    transpose->col_ind[i] = v;
+    transpose->row_ptr[i] = v;
     v += workspace[i];
 
     //Make a copy of cumulative sum in workspace
-    workspace[i] = transpose->col_ind[i];
+    workspace[i] = transpose->row_ptr[i];
   }
-  transpose->col_ind[matrix->columns] = v;
+  transpose->row_ptr[matrix->columns] = v;
 
   //  for (int i = 0; i < matrix->columns; ++i) printf("%d\n", workspace[i]);
 
@@ -317,7 +320,7 @@ Matrix* transposeMatrix( Matrix *matrix )
     {
       //Place matrix(i,j) into transpose(j,i)
       w = workspace[matrix->col_ind[j]]++;
-      transpose->row_ptr[w] = i;
+      transpose->col_ind[w] = i;
       transpose->val[w] = matrix->val[j];
     }
   }
@@ -325,5 +328,58 @@ Matrix* transposeMatrix( Matrix *matrix )
   free( workspace );
   return transpose;
 }
+
+
+
+
+
+
+// //It;s not transpose it's convert
+// //
+// //na hama cisnij to w stara strukture i bedzie git ... hyba?? 
+// Matrix* transposeMatrix( Matrix *matrix )
+// {
+//   //allocate space
+//   int *workspace = calloc( 1, matrix->columns * sizeof( int ) );
+//   int temp[2] = {( matrix->columns ), ( matrix->rows )};
+//   Matrix *transpose = makeDataStructure( matrix->quantity, temp, 'c');
+
+//   //calculate collumn counts - compress columns | cumulative sum
+//   //
+//   //quantity of each element
+//   for ( int i = 0; i < matrix->quantity; i++ )
+//   {
+//     (workspace[matrix->col_ind[i]])++;
+//   }
+//   //cumulative sum
+//   int v = 0;
+//   for ( int i = 0; i < matrix->columns; i++ )
+//   {
+//     transpose->col_ind[i] = v;
+//     v += workspace[i];
+
+//     //Make a copy of cumulative sum in workspace
+//     workspace[i] = transpose->col_ind[i];
+//   }
+//   transpose->col_ind[matrix->columns] = v;
+
+//   //  for (int i = 0; i < matrix->columns; ++i) printf("%d\n", workspace[i]);
+
+//   //fill transpose with values and row indeces
+//   int w = 0;
+//   for ( int i = 0; i < matrix->rows; i++ )
+//   {
+//     for ( int j = matrix->row_ptr[i]; j < matrix->row_ptr[i + 1]; j++ )
+//     {
+//       //Place matrix(i,j) into transpose(j,i)
+//       w = workspace[matrix->col_ind[j]]++;
+//       transpose->row_ptr[w] = i;
+//       transpose->val[w] = matrix->val[j];
+//     }
+//   }
+
+//   free( workspace );
+//   return transpose;
+// }
 
 
