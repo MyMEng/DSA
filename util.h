@@ -40,7 +40,7 @@ void checkMem( void *check );
 void fillWithNo(int *tmpint, char *tmpstr);
 
 //Prepare data structure for matrix with specified number of non-zero elements
-Matrix* makeDataStructure(int n, int *tempint);
+Matrix *makeDataStructure(int n, int *tempint, char c);
 
 //Put data from file into data structure in organised maner
 void organiseData( Matrix *matrix, FILE *file);
@@ -60,5 +60,11 @@ bool checkFile(FILE *file);
 
 //Prepare file to be read
 void initializeReading(FILE *file, int *num, int *tempint, char *tempstr);
+
+//Transpose matrix or may also serve as transformer from compresed row form to
+//compresed column form 
+//To calculate transpose we convert it to Compressed Column form and reed it as
+//compressed row form
+Matrix *transposeMatrix( Matrix *matrix );
 
 #endif

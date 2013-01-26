@@ -42,7 +42,7 @@ void fillWithNo(int *tmpint, char *tmpstr)
   }
 }
 
-Matrix* makeDataStructure(int n, int *tempint)
+Matrix* makeDataStructure(int n, int *tempint, char c)
 {
   Matrix *sparseMx = calloc( 1, sizeof( Matrix ) );
   checkMem( sparseMx );
@@ -51,9 +51,16 @@ Matrix* makeDataStructure(int n, int *tempint)
   sparseMx->quantity = n;
   sparseMx->val = calloc( 1, sparseMx->quantity * sizeof( int ) );//+1 remember about '\0'
   checkMem( sparseMx->val );
-  sparseMx->row_ptr = calloc( 1, ( sparseMx->rows + 1 ) * sizeof( int ) );
+  if ( c == 'r' )
+  {
+    sparseMx->row_ptr = calloc( 1, ( sparseMx->rows + 1 ) * sizeof( int ) );
+    sparseMx->col_ind = calloc( 1, sparseMx->quantity * sizeof( int ) );
+  } else {
+    sparseMx->row_ptr = calloc( 1, sparseMx->quantity * sizeof( int ) );
+    sparseMx->col_ind = calloc( 1, ( sparseMx->columns + 1 ) * sizeof( int ) );
+  }
+  
   checkMem( sparseMx->row_ptr );
-  sparseMx->col_ind = calloc( 1, sparseMx->quantity * sizeof( int ) );
   checkMem( sparseMx->col_ind );
   return sparseMx;
   }
@@ -68,34 +75,40 @@ void organiseData( Matrix *matrix, FILE *file)
   //Previous value of elements in row
   int on = 0;
 
+  int i;
+
   matrix->row_ptr[0] = 0;
 
-  for(int i = 0; i < matrix->columns; i++)
+  for( i = 0; i < matrix->columns; i++ )
   {
     on = cn;
     while( fscanf( file, "%s\n", tempchar ) != EOF )
     {
       fillWithNo( tempint, tempchar );
+      //printf("%d | %d | %d\n", tempint[0], tempint[1], tempint[2]);
 
       if( tempint[0] == i )
       {
        matrix->col_ind[cn] = tempint[1];
        matrix->val[cn] = tempint[2];
+       //printf("%d | %d\n", matrix->col_ind[cn], matrix->val[cn]);
        cn++;
       }
     }
 
     //Sort each row according to column number
-    insertSort(matrix, on, cn);
+    insertSort( matrix, on, cn );
 
+    //???????
+    printf("1.:%d\n", matrix->col_ind[0]);
     matrix->row_ptr[i + 1] = cn;
+    printf("2.:%d\n", matrix->col_ind[0]);
 
-    rewind(file);
+    rewind( file );
 
     //Avoid reading matrix size more than one time
-    fillWithNo( tempint, tempchar );
+    fscanf( file, "%s\n", tempchar );
   }
-
 }
 
 void writeMatrixInFile( Matrix *matrix, char *fileName )
@@ -107,8 +120,8 @@ void writeMatrixInFile( Matrix *matrix, char *fileName )
   } else {
     fprintf( file, "%d,%d\n", matrix->rows, matrix->columns );
     
-    int b;
-    int a;
+    int b = 0;
+    int a = 0;
     
     //Overflow?
     for (int i = 0; i < matrix->rows; i++)
@@ -118,6 +131,8 @@ void writeMatrixInFile( Matrix *matrix, char *fileName )
       for (int j = a; j <= b; j++)
       {
         fprintf( file, "%d,%d,%d\n", i, matrix->col_ind[j], matrix->val[j] );
+        //printf("%d\n", j);
+        //printf("%d | %d | %d\n", i, matrix->col_ind[j], matrix->val[j]);
       }
     }
 
@@ -260,3 +275,48 @@ void initializeReading(FILE *file, int *num, int *tempint, char *tempstr)
     exit (EXIT_FAILURE);
   }
 }
+
+Matrix* transposeMatrix( Matrix *matrix )
+{
+  //allocate space
+  int workspace[matrix->columns];
+  int temp[2] = {( matrix->columns ), ( matrix->rows )};
+  Matrix *transpose = makeDataStructure( matrix->quantity, temp, 'c');
+
+  //calculate collumn counts - compress columns | cumulative sum
+  //
+  //quantity of each element
+  for ( int i = 0; i < matrix->quantity; i++ )
+  {
+    workspace[matrix->col_ind[i]]++;
+  }
+  //cumulative sum
+  int v = 0;
+  for ( int i = 0; i < matrix->columns; i++ )
+  {
+    transpose->col_ind[i] = v;
+    v += workspace[i];
+
+    //Make a copy of cumulative sum in workspace
+    workspace[i] = transpose->col_ind[i];
+  }
+  transpose->col_ind[matrix->columns] = v;
+
+  //fill transpose with values and row indeces
+  int w = 0;
+  for ( int i = 0; i < matrix->rows; i++ )
+  {
+    for ( int j = matrix->row_ptr[i]; j < matrix->row_ptr[i + 1]; j++ )
+    {
+      //Place matrix(i,j) into transpose(j,i)
+      w = workspace[matrix->col_ind[j]]++;
+      //printf("%d\n", matrix->col_ind[j]);
+      transpose->row_ptr[w] = i;
+      transpose->val[w] = matrix->val[j];
+    }
+  }
+
+  return transpose;
+}
+
+

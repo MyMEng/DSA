@@ -26,8 +26,8 @@ void stage1( char* X_name, int r, int c ) {
    initializeReading( file, &n, tempint, tempstr ); 
   }
 
-  //Allocate space for matrix
-  Matrix *matrixInstance = makeDataStructure(n, tempint);
+  //Allocate space for matrix | 'r' = row compressed form
+  Matrix *matrixInstance = makeDataStructure(n, tempint, 'r');
 
   //Read data into a structure and sort them
   organiseData(matrixInstance, file);
@@ -35,13 +35,12 @@ void stage1( char* X_name, int r, int c ) {
   //Data rerieval
   print(matrixInstance, r, c);
 
-  //writeMatrixInFile( matrixInstance, "LOL.txt" );
+  writeMatrixInFile( matrixInstance, "LOL.txt" );
 
   //Free the memory after data structure
   freeMatrixMemory( matrixInstance );
 
   fclose( file );
-
 
   t2 = clock(  );
   printf("number of non-empty lines: %i\nTime elapsed %.5fs\n",
@@ -59,26 +58,45 @@ Perform stage 2:
 
 void stage2( char* R_name, char* X_name )
 {
-  // time_t t1, t2;
-  // t1 = clock(  );
+  char tempstr[BUFFSIZE];
+  int tempint[3];
+  time_t t1, t2;
+  t1 = clock(  );
 
-  // //Read the file; "r"-read only
-  // FILE *file = fopen( R_name, "r" );
-  // if ( checkFile( file ) )
-  // {
+  //number of non-0 elements in matrix
+  int n = 0;
 
-  //   writeMatrixInFile( matrixInstance, X_name );
-  // }
+  //Read the file; "r"-read only
+  FILE *file = fopen( R_name, "r" );
+  if ( checkFile( file ) )
+  {
+    initializeReading( file, &n, tempint, tempstr );
+  }
 
-  // //Free the memory after data structure
-  // freeMatrixMemory( matrixInstance );
+  //Allocate space for matrix | 'r' = row compressed form
+  Matrix *matrixInstance = makeDataStructure(n, tempint, 'r');
 
-  // fclose( file );
+  //Read data into a structure and sort them
+  organiseData(matrixInstance, file);
 
-  // t2 = clock(  );
+  fclose( file );
 
-  // printf("number of non-empty lines: %i\nTime elapsed %.5fs\n",
-  //   n, ( difftime( t2, t1 ) / CLOCKS_PER_SEC ) );
+  //Transpose read matrix
+  Matrix *transpose = transposeMatrix( matrixInstance );
+
+  //Free the memory after data structure
+  freeMatrixMemory( matrixInstance );
+
+  //write transpose to a file
+  //writeMatrixInFile( transpose, X_name );
+
+  //Free the memory after data structure
+  freeMatrixMemory( transpose );
+
+  t2 = clock(  );
+
+  printf("number of non-empty lines: %i\nTime elapsed %.5fs\n",
+    n, ( difftime( t2, t1 ) / CLOCKS_PER_SEC ) );
 
 }
 

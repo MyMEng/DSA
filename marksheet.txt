@@ -45,7 +45,7 @@ relating to functional correctness.
 [X]           - suitable data structure                              ( 10%)
 [X]           - read, write and access functions                     ( 10%)
 
-[_] Stage 2 : Implemented matrix transpose                           ( 10%)
+[X] Stage 2 : Implemented matrix transpose                           ( 10%)
 
 [_] Stage 3 : Implemented matrix addition                            ( 10%)
 
