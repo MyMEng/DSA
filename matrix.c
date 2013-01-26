@@ -88,7 +88,7 @@ void stage2( char* R_name, char* X_name )
   freeMatrixMemory( matrixInstance );
 
 
-  print(transpose, 0, 0);
+  //print(transpose, 0, 0);
 
 
   //write transpose to a file
