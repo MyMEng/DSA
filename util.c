@@ -123,7 +123,7 @@ void organiseData( Matrix *matrix, FILE *file, char c )
 void writeMatrixInFile( Matrix *matrix, char *fileName )
 {
   FILE *file = fopen( fileName, "w" );
-  if ( file == NULL ) {
+  if ( file == NULL || matrix == NULL ) {
     fprintf ( stderr, "Could not write the file.\n" );
     exit ( EXIT_FAILURE );
   } else {
@@ -343,6 +343,16 @@ Matrix* transposeMatrix( Matrix *matrix )
 }
 
 
+
+bool sumDim( Matrix *A, Matrix *B )
+{
+  return true;
+}
+
+Matrix *add( Matrix *A, Matrix *B )
+{
+  return NULL;
+}
 
 
 

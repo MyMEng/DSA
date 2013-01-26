@@ -119,7 +119,58 @@ Perform stage 3:
 
 void stage3( char* R_name, char* X_name, char* Y_name ) {
 
-  // fill in this function with solution
+  char tempstrX[BUFFSIZE];
+  int tempintX[3];
+  char tempstrY[BUFFSIZE];
+  int tempintY[3];
+  time_t t1, t2;
+  t1 = clock(  );
+
+  //number of non-0 elements in matrix
+  int nX = 0;
+  int nY = 0;
+
+  //Read the file; "r"-read only
+  FILE *fileX = fopen( X_name, "r" );
+  FILE *fileY = fopen( Y_name, "r" );
+  if ( checkFile( fileX ) && checkFile( fileY ) )
+  {
+    initializeReading( fileX, &nX, tempintX, tempstrX );
+    initializeReading( fileY, &nY, tempintY, tempstrY );
+  }
+
+  //Allocate space for matrix | 'r' = row compressed form
+  Matrix *mxA = makeDataStructure( nX, tempintX, 'r' );
+  Matrix *mxB = makeDataStructure( nY, tempintY, 'r' );
+
+  //Read data into a structure and sort them
+  organiseData( mxA, fileX, 'N' );
+  organiseData( mxB, fileY, 'N' );
+
+  fclose( fileX );
+  fclose( fileY );
+
+
+  //If dimmensions of matrices are correct sum them
+  Matrix *sum = NULL;
+  if( sumDim( mxA, mxB ) )
+  {
+    sum = add( mxA, mxB );
+  }
+
+
+  //write transpose to a file
+  writeMatrixInFile( sum, R_name );
+
+  //Free the memory after data structure
+  freeMatrixMemory( sum );
+  freeMatrixMemory( mxA );
+  freeMatrixMemory( mxB );
+
+  t2 = clock(  );
+
+  printf("number of non-empty lines: X=%d | Y=%d\nTime elapsed %.5fs\n",
+    nX, nY, ( difftime( t2, t1 ) / CLOCKS_PER_SEC ) );
 
 }
 

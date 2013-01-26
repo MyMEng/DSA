@@ -56,15 +56,21 @@ void print( Matrix *matrix, int r, int c );
 void insertSort( Matrix *mx, int a, int b );
 
 //Check whether file was opened without any error
-bool checkFile(FILE *file);
+bool checkFile( FILE *file );
 
 //Prepare file to be read
-void initializeReading(FILE *file, int *num, int *tempint, char *tempstr);
+void initializeReading( FILE *file, int *num, int *tempint, char *tempstr );
 
 //Transpose matrix or may also serve as transformer from compresed row form to
 //compresed column form 
 //To calculate transpose we convert it to Compressed Column form and reed it as
 //compressed row form
 Matrix *transposeMatrix( Matrix *matrix );
+
+//Check whether dimmensions for addition are correct
+bool sumDim( Matrix *A, Matrix *B );
+
+//Add matrices A and B
+Matrix *add( Matrix *A, Matrix *B );
 
 #endif
