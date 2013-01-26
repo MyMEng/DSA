@@ -43,7 +43,7 @@ void fillWithNo(int *tmpint, char *tmpstr);
 Matrix *makeDataStructure(int n, int *tempint, char c);
 
 //Put data from file into data structure in organised maner
-void organiseData( Matrix *matrix, FILE *file);
+void organiseData( Matrix *matrix, FILE *file, char c);
 
 //Write the matrix to the file
 void writeMatrixInFile( Matrix *matrix, char *fileName );

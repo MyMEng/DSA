@@ -65,7 +65,7 @@ Matrix* makeDataStructure(int n, int *tempint, char c)
   return sparseMx;
   }
 
-void organiseData( Matrix *matrix, FILE *file)
+void organiseData( Matrix *matrix, FILE *file, char c )
 {
   char tempchar[BUFFSIZE];
   int tempint[3];
@@ -79,7 +79,7 @@ void organiseData( Matrix *matrix, FILE *file)
 
   matrix->row_ptr[0] = 0;
 
-  for( i = 0; i < matrix->columns; i++ )
+  for( i = 0; i < matrix->rows; i++ )
   {
     on = cn;
     while( fscanf( file, "%s\n", tempchar ) != EOF )
@@ -97,12 +97,15 @@ void organiseData( Matrix *matrix, FILE *file)
     }
 
     //Sort each row according to column number
-    insertSort( matrix, on, cn );
+    //You don't have to sort when you do a trnspose
+    if( c == 'T' )
+    {
 
-    //???????
-    printf("1.:%d\n", matrix->col_ind[0]);
+    } else {
+      insertSort( matrix, on, cn );
+    }
+
     matrix->row_ptr[i + 1] = cn;
-    printf("2.:%d\n", matrix->col_ind[0]);
 
     rewind( file );
 
@@ -228,17 +231,19 @@ void print( Matrix *matrix, int r, int c )
 
 }
 
+//sort including a excluding b
 void insertSort( Matrix *mx, int a, int b )
 {
   int colToIns;
   int valToIns;
   int valPos;
+  //printf("a is: %d | b is : %d\n",a, b );
   for ( int i = ( a + 1 ); i < b; i++ )
   {
     valPos = i;
-    colToIns = mx->col_ind[i];
-    valToIns = mx->val[i];
-    while( ( valPos > 0 ) && ( colToIns < mx->col_ind[valPos - 1] ) )
+    colToIns = mx->col_ind[valPos];
+    valToIns = mx->val[valPos];
+    while( ( valPos > a ) && ( colToIns < mx->col_ind[valPos - 1] ) )
     {
       mx->col_ind[valPos] = mx->col_ind[valPos - 1];
       mx->val[valPos] = mx->val[valPos - 1];
@@ -279,7 +284,7 @@ void initializeReading(FILE *file, int *num, int *tempint, char *tempstr)
 Matrix* transposeMatrix( Matrix *matrix )
 {
   //allocate space
-  int workspace[matrix->columns];
+  int *workspace = calloc( 1, matrix->columns * sizeof( int ) );
   int temp[2] = {( matrix->columns ), ( matrix->rows )};
   Matrix *transpose = makeDataStructure( matrix->quantity, temp, 'c');
 
@@ -288,7 +293,7 @@ Matrix* transposeMatrix( Matrix *matrix )
   //quantity of each element
   for ( int i = 0; i < matrix->quantity; i++ )
   {
-    workspace[matrix->col_ind[i]]++;
+    (workspace[matrix->col_ind[i]])++;
   }
   //cumulative sum
   int v = 0;
@@ -302,6 +307,8 @@ Matrix* transposeMatrix( Matrix *matrix )
   }
   transpose->col_ind[matrix->columns] = v;
 
+  //  for (int i = 0; i < matrix->columns; ++i) printf("%d\n", workspace[i]);
+
   //fill transpose with values and row indeces
   int w = 0;
   for ( int i = 0; i < matrix->rows; i++ )
@@ -310,12 +317,12 @@ Matrix* transposeMatrix( Matrix *matrix )
     {
       //Place matrix(i,j) into transpose(j,i)
       w = workspace[matrix->col_ind[j]]++;
-      //printf("%d\n", matrix->col_ind[j]);
       transpose->row_ptr[w] = i;
       transpose->val[w] = matrix->val[j];
     }
   }
 
+  free( workspace );
   return transpose;
 }
 

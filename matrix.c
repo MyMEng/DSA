@@ -30,12 +30,12 @@ void stage1( char* X_name, int r, int c ) {
   Matrix *matrixInstance = makeDataStructure(n, tempint, 'r');
 
   //Read data into a structure and sort them
-  organiseData(matrixInstance, file);
+  organiseData( matrixInstance, file, 'N' );
 
   //Data rerieval
   print(matrixInstance, r, c);
 
-  writeMatrixInFile( matrixInstance, "LOL.txt" );
+  //writeMatrixInFile( matrixInstance, "LOL.txt" );
 
   //Free the memory after data structure
   freeMatrixMemory( matrixInstance );
@@ -77,7 +77,7 @@ void stage2( char* R_name, char* X_name )
   Matrix *matrixInstance = makeDataStructure(n, tempint, 'r');
 
   //Read data into a structure and sort them
-  organiseData(matrixInstance, file);
+  organiseData(matrixInstance, file, 'T');
 
   fclose( file );
 
@@ -87,8 +87,12 @@ void stage2( char* R_name, char* X_name )
   //Free the memory after data structure
   freeMatrixMemory( matrixInstance );
 
+
+  print(transpose, 94, 76);
+
+
   //write transpose to a file
-  //writeMatrixInFile( transpose, X_name );
+  writeMatrixInFile( transpose, X_name );
 
   //Free the memory after data structure
   freeMatrixMemory( transpose );
