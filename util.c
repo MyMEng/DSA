@@ -346,16 +346,70 @@ Matrix* transposeMatrix( Matrix *matrix )
 
 bool sumDim( Matrix *A, Matrix *B )
 {
-  return true;
+  if( ( A->rows == B->rows ) && ( A->columns == B-> columns ) )
+  {
+    return true;
+  } else {
+    return false;
+  }
 }
 
 Matrix *add( Matrix *A, Matrix *B )
 {
-  return NULL;
+
+  int temp[2] = {( A->rows ), ( A->columns )};
+  int tv = 0;
+  int x = 0;
+  Matrix *sum = makeDataStructure( A->quantity + B->quantity, temp, 'r');
+  int *workspaceA = calloc( 1, A->columns * sizeof( int ) );
+  int *workspaceB = calloc( 1, B->columns * sizeof( int ) );
+  for (int i = 0; i < A->rows; i++)
+  {
+    sum->row_ptr[i] = tv;
+
+    //tv = helpMeAdd( A, i, workspaceA, workspaceB, i + 1, sum, tv );
+    for (int a = A->row_ptr[i]; a < A->row_ptr[i + 1]; a++)
+    {
+      x = A->col_ind[a];
+      if ( workspaceA[x] < ( i + 1 ) )
+      {
+        workspaceA[x] = ( i + 1 );
+        tv++;
+        sum->col_ind[tv] = x;
+        workspaceB[x] = A->val[a];
+      } else {
+        workspaceB[x] += A->val[a];
+      }
+    }
+
+    //tv = helpMeAdd( B, i, workspaceA, workspaceB, i + 1, sum, tv );
+    for (int b = B->row_ptr[i]; b < B->row_ptr[i + 1]; b++)
+    {
+      x = B->col_ind[b];
+      if ( workspaceA[x] < ( i + 1 ) )
+      {
+        workspaceA[x] = ( i + 1 );
+        tv++;
+        sum->col_ind[tv] = x;
+        workspaceB[x] = B->val[b];
+      } else {
+        workspaceB[x] += B->val[b];
+      }
+    }
+
+    for (int j = sum->row_ptr[i]; j < tv; j++)
+    {
+      sum->val[j] = workspaceB[sum->col_ind[j]];
+    }
+  }
+  sum->row_ptr[A->columns] = tv;
+
+  free( workspaceA );
+  free( workspaceB );
+  //remove extra space in sum matrix
+
+  return sum;
 }
-
-
-
 
 // //It;s not transpose it's convert
 // //
@@ -404,5 +458,3 @@ Matrix *add( Matrix *A, Matrix *B )
 //   free( workspace );
 //   return transpose;
 // }
-
-
