@@ -356,42 +356,37 @@ bool sumDim( Matrix *A, Matrix *B )
 
 Matrix *add( Matrix *A, Matrix *B )
 {
-
   int temp[2] = {( A->rows ), ( A->columns )};
   int y = 0;
-  //int x = 0;
+
+  //flag that indicates that something summed up to 0
+  bool zeroSum = false;
+  int zeroQuantity = 0;
+
   Matrix *sum = makeDataStructure( A->quantity + B->quantity, temp, 'r');
-  int *workspaceA = calloc( 1, A->columns * sizeof( int ) );
-  int *workspaceB = calloc( 1, B->columns * sizeof( int ) );
+  int *workspaceA = calloc( A->columns, sizeof( int ) );
+  int *workspaceB = calloc( B->columns, sizeof( int ) );
 
   for (int i = 0; i < A->rows; i++)
   {
     sum->row_ptr[i] = y;
 
-    //tv = helpMeAdd( A, i, workspaceA, workspaceB, i + 1, sum, tv );
     for (int a = A->row_ptr[i]; a < A->row_ptr[i + 1]; a++)
     {
-      //x = A->col_ind[a];
-      if ( workspaceA[A->col_ind[a]] < ( i + 1 ) )
-      {
-        workspaceA[A->col_ind[a]] = ( i + 1 );
-        //y++;
-        sum->col_ind[y] = A->col_ind[a];
-        y++;
-        workspaceB[A->col_ind[a]] = A->val[a];
-      } else {
-        workspaceB[A->col_ind[a]] += A->val[a];
-      }
+      //Mark that column of index A->col_ind[a] has been read on this row
+      workspaceA[A->col_ind[a]] = i + 1;
+      sum->col_ind[y] = A->col_ind[a];
+      y++;
+      workspaceB[A->col_ind[a]] = A->val[a];
+
     }
 
-    //tv = helpMeAdd( B, i, workspaceA, workspaceB, i + 1, sum, tv );
     for (int b = B->row_ptr[i]; b < B->row_ptr[i + 1]; b++)
     {
-      //x = B->col_ind[b];
-      if ( workspaceA[B->col_ind[b]] < ( i + 1 ) )
+      //Check whether element already have been read
+      if ( workspaceA[B->col_ind[b]] <= i )
       {
-        workspaceA[B->col_ind[b]] = ( i + 1 );
-        //y++;
+        workspaceA[B->col_ind[b]] = i + 1;
         sum->col_ind[y] = B->col_ind[b];
         y++;
         workspaceB[B->col_ind[b]] = B->val[b];
@@ -403,20 +398,30 @@ Matrix *add( Matrix *A, Matrix *B )
 
     for (int j = sum->row_ptr[i]; j < y; j++)
     {
-
       //when sum up to 0
       if (workspaceB[sum->col_ind[j]]  == 0)
       {
-        printf("sum is O LOL:%d | %d | %d \n", i,j, workspaceB[sum->col_ind[j]]);
+        zeroSum = true;
+        zeroQuantity++;
       }
       sum->val[j] = workspaceB[sum->col_ind[j]];
     }
 
-    //insertSort( sum, i, i+1 );
+    if (zeroSum)
+    {
+
+      for (int g = sum->row_ptr[i]; g < y; ++g)
+      {
+        printf("O LOL:%d | %d | %d | #0 = %d\n", i, sum->col_ind[g], sum->val[g], zeroQuantity);
+      }
+      y -= zeroQuantity;
+
+      zeroQuantity = 0;
+      zeroSum = false;
+    }
 
   }
   sum->row_ptr[A->columns] = y;
-
 
   free( workspaceA );
   free( workspaceB );
@@ -424,6 +429,12 @@ Matrix *add( Matrix *A, Matrix *B )
 
   return sum;
 }
+
+
+
+
+
+
 
 // //It;s not transpose it's convert
 // //
