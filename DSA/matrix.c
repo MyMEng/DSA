@@ -150,9 +150,9 @@ void stage3( char* R_name, char* X_name, char* Y_name ) {
   Matrix *mxA = makeDataStructure( nX, tempintX, 'r' );
   Matrix *mxB = makeDataStructure( nY, tempintY, 'r' );
 
-  //Read data into a structure and sort them
-  organiseData( mxA, fileX, 'N' );
-  organiseData( mxB, fileY, 'N' );
+  //Read data into a structure and do not sort them
+  organiseData( mxA, fileX, 'T'/*'N'*/ );
+  organiseData( mxB, fileY, 'T'/*'N'*/ );
 
   fclose( fileX );
   fclose( fileY );
