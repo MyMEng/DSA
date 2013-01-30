@@ -1,5 +1,12 @@
 //Backup 1
 
+  /*
+    0,001
+    0,002
+    0,003
+    0,010
+  */
+
 #include "matrix.h"
 
 /*
@@ -157,6 +164,9 @@ void stage3( char* R_name, char* X_name, char* Y_name ) {
   {
     sum = add( mxA, mxB );
   }
+
+  //writeMatrixInFile( mxA, "A.txt" );
+  //writeMatrixInFile( mxB, "B.txt" );
 
 
   //write transpose to a file

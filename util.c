@@ -358,51 +358,65 @@ Matrix *add( Matrix *A, Matrix *B )
 {
 
   int temp[2] = {( A->rows ), ( A->columns )};
-  int tv = 0;
-  int x = 0;
+  int y = 0;
+  //int x = 0;
   Matrix *sum = makeDataStructure( A->quantity + B->quantity, temp, 'r');
   int *workspaceA = calloc( 1, A->columns * sizeof( int ) );
   int *workspaceB = calloc( 1, B->columns * sizeof( int ) );
+
   for (int i = 0; i < A->rows; i++)
   {
-    sum->row_ptr[i] = tv;
+    sum->row_ptr[i] = y;
 
     //tv = helpMeAdd( A, i, workspaceA, workspaceB, i + 1, sum, tv );
     for (int a = A->row_ptr[i]; a < A->row_ptr[i + 1]; a++)
     {
-      x = A->col_ind[a];
-      if ( workspaceA[x] < ( i + 1 ) )
+      //x = A->col_ind[a];
+      if ( workspaceA[A->col_ind[a]] < ( i + 1 ) )
       {
-        workspaceA[x] = ( i + 1 );
-        tv++;
-        sum->col_ind[tv] = x;
-        workspaceB[x] = A->val[a];
+        workspaceA[A->col_ind[a]] = ( i + 1 );
+        //y++;
+        sum->col_ind[y] = A->col_ind[a];
+        y++;
+        workspaceB[A->col_ind[a]] = A->val[a];
       } else {
-        workspaceB[x] += A->val[a];
+        workspaceB[A->col_ind[a]] += A->val[a];
       }
     }
 
     //tv = helpMeAdd( B, i, workspaceA, workspaceB, i + 1, sum, tv );
     for (int b = B->row_ptr[i]; b < B->row_ptr[i + 1]; b++)
     {
-      x = B->col_ind[b];
-      if ( workspaceA[x] < ( i + 1 ) )
+      //x = B->col_ind[b];
+      if ( workspaceA[B->col_ind[b]] < ( i + 1 ) )
       {
-        workspaceA[x] = ( i + 1 );
-        tv++;
-        sum->col_ind[tv] = x;
-        workspaceB[x] = B->val[b];
+        workspaceA[B->col_ind[b]] = ( i + 1 );
+        //y++;
+        sum->col_ind[y] = B->col_ind[b];
+        y++;
+        workspaceB[B->col_ind[b]] = B->val[b];
       } else {
-        workspaceB[x] += B->val[b];
+        workspaceB[B->col_ind[b]] += B->val[b];
       }
     }
 
-    for (int j = sum->row_ptr[i]; j < tv; j++)
+
+    for (int j = sum->row_ptr[i]; j < y; j++)
     {
+
+      //when sum up to 0
+      if (workspaceB[sum->col_ind[j]]  == 0)
+      {
+        printf("sum is O LOL:%d | %d | %d \n", i,j, workspaceB[sum->col_ind[j]]);
+      }
       sum->val[j] = workspaceB[sum->col_ind[j]];
     }
+
+    //insertSort( sum, i, i+1 );
+
   }
-  sum->row_ptr[A->columns] = tv;
+  sum->row_ptr[A->columns] = y;
+
 
   free( workspaceA );
   free( workspaceB );
