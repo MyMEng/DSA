@@ -1,0 +1,7 @@
+//
+// Prefix header for all source files of the 'DSATests' target in the 'DSATests' project
+//
+
+#ifdef __OBJC__
+    #import <Cocoa/Cocoa.h>
+#endif
