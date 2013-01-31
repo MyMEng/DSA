@@ -240,7 +240,7 @@ void stage4( char* R_name, char* X_name, char* Y_name ) {
   Matrix *product = NULL;
   if( productDim( mxA, mxB ) )
   {
-    product = multiply( mxB, mxA );
+    product = multiply( mxA, mxB );
   } else {
       fprintf ( stderr, "Uncompatible dimmensions.\n" );
       exit ( EXIT_FAILURE );

@@ -160,9 +160,9 @@ void writeMatrixInFile( Matrix *matrix, char *fileName )
     //Overflow?
     for ( unsigned int i = 0; i < matrix->rows; i++ )
     {
-      b = matrix->row_ptr[i + 1] - 1;
+      b = matrix->row_ptr[i + 1];
       a = matrix->row_ptr[i];
-      for ( unsigned int j = a; j <= b; j++ )
+      for ( unsigned int j = a; j < b; j++ )
       {
 
         //printf("Counter: %d | a: %d | b: %d\n", i, a, b);
@@ -186,12 +186,12 @@ void print( Matrix *matrix, unsigned int r, unsigned int c )
       exit ( EXIT_FAILURE );
   }
 
-  unsigned int b = ( matrix->row_ptr[r + 1] - 1 );
+  unsigned int b = matrix->row_ptr[r + 1];
   unsigned int a = matrix->row_ptr[r];
 
   {//Print element (r, c)
     int temp = 0;
-    for ( unsigned int i = a; i <= b; i++ )
+    for ( unsigned int i = a; i < b; i++ )
     {
       if( c == matrix->col_ind[i] )
       {
@@ -215,7 +215,7 @@ void print( Matrix *matrix, unsigned int r, unsigned int c )
 
     for( unsigned int i = 1; i < matrix->columns; i++ )
     {
-      if( i == matrix->col_ind[colId] && colId <= b )
+      if( i == matrix->col_ind[colId] && colId < b )
       {
         printf( ",%d", matrix->val[colId] );
         colId++;
@@ -235,7 +235,7 @@ void print( Matrix *matrix, unsigned int r, unsigned int c )
     //Overflow?
     
     tempcol = 0;
-    for ( unsigned int j = matrix->row_ptr[0]; j <= ( matrix->row_ptr[1] - 1 ); j++ )
+    for ( unsigned int j = matrix->row_ptr[0]; j < matrix->row_ptr[1]; j++ )
     {
           if( c == matrix->col_ind[j] )
           {
@@ -247,10 +247,10 @@ void print( Matrix *matrix, unsigned int r, unsigned int c )
     
     for ( unsigned int i = 1; i < matrix->rows; i++ )
     {
-      y = matrix->row_ptr[i + 1] - 1;
+      y = matrix->row_ptr[i + 1];
       x = matrix->row_ptr[i];
       tempcol = 0;
-      for ( unsigned int j = x; j <= y; j++ )
+      for ( unsigned int j = x; j < y; j++ )
       {
             if( c == matrix->col_ind[j] )
             {
@@ -519,19 +519,19 @@ Matrix *multiply( Matrix *A, Matrix *B )
 
     product->row_ptr[i] = y;
 
-    for ( unsigned int j = B->row_ptr[i]; j < B->row_ptr[i + 1]; j++ )
+    for ( unsigned int j = A->row_ptr[i]; j < A->row_ptr[i + 1]; j++ )
     {
-      for ( unsigned int k = A->row_ptr[B->col_ind[j]];
-        k < A->row_ptr[B->col_ind[j] + 1]; k++ )
+      for ( unsigned int k = B->row_ptr[A->col_ind[j]];
+        k < B->row_ptr[A->col_ind[j] + 1]; k++ )
       {
-        if ( workspaceA[A->col_ind[k]] < i + 1 )
+        if ( workspaceA[B->col_ind[k]] <= i )
         {
-          workspaceA[A->col_ind[k]] = i + 1;
-          product->col_ind[y] = A->col_ind[k];
+          workspaceA[B->col_ind[k]] = i + 1;
+          product->col_ind[y] = B->col_ind[k];
           y++;
-          workspaceB[A->col_ind[k]] = B->val[j] * A->val[k];
+          workspaceB[B->col_ind[k]] = A->val[j] * B->val[k];
         } else {
-          workspaceB[A->col_ind[k]] += B->val[j] * A->val[k];
+          workspaceB[B->col_ind[k]] += A->val[j] * B->val[k];
         }
       }
     }
@@ -558,15 +558,21 @@ Matrix *multiply( Matrix *A, Matrix *B )
       zeroProd = false;
     }
 
+    //printf("Y is: %d\n", y);
+
   }
-  product->row_ptr[B->columns] = y;
+
+  product->row_ptr[A->rows] = y;
+  //for (int x = 0; x <= A->rows; ++x) printf("Rowptr: %d\n", product->row_ptr[x]);
 
   Matrix *shrinkedProduct = makeDataStructure( y, temp, 'r');
   reallocMatrix( product, shrinkedProduct, '<' );
 
   free( workspaceA );
   free( workspaceB );
-  freeMatrixMemory( product );  
+  freeMatrixMemory( product );
+
+  //for (int x = 0; x <= A->rows; ++x) printf("Rowptr: %d\n", shrinkedProduct->row_ptr[x]);  
 
   return shrinkedProduct;
 }
