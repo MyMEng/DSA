@@ -525,6 +525,17 @@ Matrix *multiply( Matrix *A, Matrix *B )
   return product;
 }
 
+bool checkOnMx( Matrix *matrix, int row, int column )
+{
+  for ( int i = matrix->row_ptr[row]; i < matrix->row_ptr[row + 1]; i++ )
+  {
+    if ( matrix->col_ind[i] == column )
+    {
+      return true;
+    }
+  }
+  return false;
+}
 
 
 // //It;s not transpose it's convert

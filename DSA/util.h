@@ -79,4 +79,7 @@ bool productDim( Matrix *mxA, Matrix *mxB );
 
 Matrix *multiply( Matrix *mxA, Matrix *mxB );
 
+//search for element in matrix
+bool checkOnMx( Matrix *matrix, int row, int column );
+
 #endif
