@@ -498,7 +498,7 @@ Matrix *multiply( Matrix *A, Matrix *B )
       {
         if ( workspaceA[A->col_ind[k]] < i + 1 )
         {
-          workspaceB[A->col_ind[k]] = i + 1;
+          workspaceA[A->col_ind[k]] = i + 1;
           product->col_ind[y] = A->col_ind[k];
           y++;
           workspaceB[A->col_ind[k]] = /*( B->val ? B->val[j] : 1 )*/B->val[j] * A->val[k];
@@ -513,6 +513,8 @@ Matrix *multiply( Matrix *A, Matrix *B )
     }
   }
   product->row_ptr[B->columns] = y;
+
+  //zero jak choj "2*-1 + -2*1 = 0"
 
 
   free( workspaceA );

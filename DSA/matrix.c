@@ -6,9 +6,9 @@
     0,003
     0,010
 
-  optymalizacja wczytywania + testy
-
-    Safe mode : reading with spaces, multiple entries, unsigned int
+    Safe mode : optymalizacja wczytywamnia: reading with spaces,
+      multiple entries, unsigned int
+     + testy
   */
 
 #include "matrix.h"
