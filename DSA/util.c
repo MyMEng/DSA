@@ -1,11 +1,11 @@
 #include "util.h"
 
-int numberOfLines(FILE *file)
+unsigned int numberOfLines(FILE *file)
 {
   //As max value of int is 65536 and there are three of these values plus
   //commas and spaces it's enough to have buffer of length 25
   char temp[BUFFSIZE];
-  int counter = 0;
+  unsigned int counter = 0;
 
   fscanf( file, "%s\n", temp );
 
@@ -38,34 +38,59 @@ void fillWithNo(int *tmpint, char *tmpstr)
   int id = 0;
 
   id = sscanf ( tmpstr, "%d,%d,%d/n", &tmpint[0], &tmpint[1], &tmpint[2]);
-
   //Accept ony if 2 or 3 elements have been read(valid file formatting) 
-  if( ( id != 2 ) && ( id != 3 ) )
+  if( id != 3  )
   {
     fprintf( stderr, "Bad file formatting.\n" );
     exit( EXIT_FAILURE );
   }
 }
 
-Matrix* makeDataStructure(int n, int *tempint, char c)
+
+void initializeReading(FILE *file, unsigned int *num, unsigned int *tempint,
+  char *tempstr)
+{
+  //Check number of non-empty lines in file
+  int id = 0;
+
+  *num = numberOfLines(file);
+  rewind(file);
+
+  //Read the firs valid line of file to know the dimmensions of matrix
+  if( fscanf( file, "%s\n", tempstr ) != EOF )
+  {
+    //Rearange first read line
+    id = sscanf ( tempstr, "%d,%d/n", &tempint[0], &tempint[1]);
+    if ( id != 2 )
+    {
+      fprintf ( stderr, "File empty.\n" );
+      exit (EXIT_FAILURE);
+    }
+  } else {
+    fprintf ( stderr, "File empty.\n" );
+    exit (EXIT_FAILURE);
+  }
+}
+
+Matrix* makeDataStructure( unsigned int n, unsigned int *tempint, char c )
 {
   Matrix *sparseMx = calloc( 1, sizeof( Matrix ) );
   checkMem( sparseMx );
   sparseMx->rows = tempint[0];
   sparseMx->columns = tempint[1];
   sparseMx->quantity = n;
-  sparseMx->val = calloc( 1, sparseMx->quantity * sizeof( int ) );//+1 remember about '\0'
+  sparseMx->val = calloc( sparseMx->quantity, sizeof( int ) );//+1 remember about '\0'
   checkMem( sparseMx->val );
   if ( c == 'r' ) //row compressed form
   {
-    sparseMx->row_ptr = calloc( 1, ( sparseMx->rows + 1 ) * sizeof( int ) );
-    sparseMx->col_ind = calloc( 1, sparseMx->quantity * sizeof( int ) );
+    sparseMx->row_ptr = calloc( sparseMx->rows + 1, sizeof( unsigned int ) );
+    sparseMx->col_ind = calloc( sparseMx->quantity, sizeof( unsigned int ) );
   } else if( c == 'c' ) { //column compressed form
-    sparseMx->row_ptr = calloc( 1, sparseMx->quantity * sizeof( int ) );
-    sparseMx->col_ind = calloc( 1, ( sparseMx->columns + 1 ) * sizeof( int ) );
+    sparseMx->row_ptr = calloc( sparseMx->quantity, sizeof( unsigned int ) );
+    sparseMx->col_ind = calloc( sparseMx->columns + 1, sizeof( unsigned int ) );
   } else if( c == 'T' ) {
-    sparseMx->row_ptr = calloc( 1, ( sparseMx->columns + 1 ) * sizeof( int ) );
-    sparseMx->col_ind = calloc( 1, sparseMx->quantity * sizeof( int ) );
+    sparseMx->row_ptr = calloc( sparseMx->columns + 1, sizeof( unsigned int ) );
+    sparseMx->col_ind = calloc( sparseMx->quantity, sizeof( unsigned int ) );
   }
   
   checkMem( sparseMx->row_ptr );
@@ -79,11 +104,11 @@ void organiseData( Matrix *matrix, FILE *file, char c )
   int tempint[3];
 
   //Current element in row
-  int cn = 0;
+  unsigned int cn = 0;
   //Previous value of elements in row
-  int on = 0;
+  unsigned int on = 0;
 
-  int i;
+  unsigned int i;
 
   matrix->row_ptr[0] = 0;
 
@@ -129,15 +154,15 @@ void writeMatrixInFile( Matrix *matrix, char *fileName )
   } else {
     fprintf( file, "%d,%d\n", matrix->rows, matrix->columns );
     
-    int b = 0;
-    int a = 0;
+    unsigned int b = 0;
+    unsigned int a = 0;
     
     //Overflow?
-    for (int i = 0; i < matrix->rows; ++i)
+    for ( unsigned int i = 0; i < matrix->rows; i++ )
     {
       b = matrix->row_ptr[i + 1] - 1;
       a = matrix->row_ptr[i];
-      for (int j = a; j <= b; j++)
+      for ( unsigned int j = a; j <= b; j++ )
       {
 
         //printf("Counter: %d | a: %d | b: %d\n", i, a, b);
@@ -152,7 +177,7 @@ void writeMatrixInFile( Matrix *matrix, char *fileName )
   fclose( file );
 }
 
-void print( Matrix *matrix, int r, int c )
+void print( Matrix *matrix, unsigned int r, unsigned int c )
 {
 
   if ( r < 0 || r >= matrix->rows || c < 0 || c >= matrix->columns )
@@ -161,12 +186,12 @@ void print( Matrix *matrix, int r, int c )
       exit ( EXIT_FAILURE );
   }
 
-  int b = ( matrix->row_ptr[r + 1] - 1 );
-  int a = matrix->row_ptr[r];
+  unsigned int b = ( matrix->row_ptr[r + 1] - 1 );
+  unsigned int a = matrix->row_ptr[r];
 
   {//Print element (r, c)
     int temp = 0;
-    for ( int i = a; i <= b; i++ )
+    for ( unsigned int i = a; i <= b; i++ )
     {
       if( c == matrix->col_ind[i] )
       {
@@ -178,7 +203,7 @@ void print( Matrix *matrix, int r, int c )
   }
 
   {//Print row r
-    int colId = a;
+    unsigned int colId = a;
 
     if( 0 == matrix->col_ind[colId] )
     {
@@ -188,7 +213,7 @@ void print( Matrix *matrix, int r, int c )
       printf( "0" );
     }
 
-    for( int i = 1; i < matrix->columns; i++ )
+    for( unsigned int i = 1; i < matrix->columns; i++ )
     {
       if( i == matrix->col_ind[colId] && colId <= b )
       {
@@ -203,14 +228,14 @@ void print( Matrix *matrix, int r, int c )
   }
 
   {//Print column c
-    int x;
-    int y;
+    unsigned int x;
+    unsigned int y;
     int tempcol;
 
     //Overflow?
     
     tempcol = 0;
-    for ( int j = matrix->row_ptr[0]; j <= ( matrix->row_ptr[1] - 1 ); j++ )
+    for ( unsigned int j = matrix->row_ptr[0]; j <= ( matrix->row_ptr[1] - 1 ); j++ )
     {
           if( c == matrix->col_ind[j] )
           {
@@ -220,12 +245,12 @@ void print( Matrix *matrix, int r, int c )
     }
     printf( "%d", tempcol );
     
-    for ( int i = 1; i < matrix->rows; i++ )
+    for ( unsigned int i = 1; i < matrix->rows; i++ )
     {
       y = matrix->row_ptr[i + 1] - 1;
       x = matrix->row_ptr[i];
       tempcol = 0;
-      for ( int j = x; j <= y; j++ )
+      for ( unsigned int j = x; j <= y; j++ )
       {
             if( c == matrix->col_ind[j] )
             {
@@ -241,11 +266,11 @@ void print( Matrix *matrix, int r, int c )
 }
 
 //sort including a excluding b
-void insertSort( Matrix *mx, int a, int b )
+void insertSort( Matrix *mx, unsigned int a, unsigned int b )
 {
-  int colToIns;
+  unsigned int colToIns;
   int valToIns;
-  int valPos;
+  unsigned int valPos;
   //printf("a is: %d | b is : %d\n",a, b );
   for ( int i = ( a + 1 ); i < b; i++ )
   {
@@ -273,38 +298,19 @@ bool checkFile(FILE *file)
   return true;
 }
 
-void initializeReading(FILE *file, int *num, int *tempint, char *tempstr)
-{
-  //Check number of non-empty lines in file
-  *num = numberOfLines(file);
-  rewind(file);
-
-  //Read the firs valid line of file to know the dimmensions of matrix
-  if( fscanf( file, "%s\n", tempstr ) != EOF )
-  {
-    //Rearange first read line
-    fillWithNo(tempint, tempstr);
-  } else {
-    fprintf ( stderr, "File empty.\n" );
-    exit (EXIT_FAILURE);
-  }
-}
-
-
-
 Matrix* transposeMatrix( Matrix *matrix )
 {
   //allocate space
-  int *workspace = calloc( 1, matrix->columns * sizeof( int ) );
-  int temp[2] = {( matrix->columns ), ( matrix->rows )};
+  unsigned int *workspace = calloc( matrix->columns, sizeof( unsigned int ) );
+  unsigned int temp[2] = {( matrix->columns ), ( matrix->rows )};
   Matrix *transpose = makeDataStructure( matrix->quantity, temp, 'T');
 
   //calculate collumn counts - compress columns | cumulative sum
   //
   //quantity of each element
-  for ( int i = 0; i < matrix->quantity; i++ )
+  for ( unsigned int i = 0; i < matrix->quantity; i++ )
   {
-    (workspace[matrix->col_ind[i]])++;
+    ( workspace[matrix->col_ind[i]] )++;
   }
 
   //for (int i = 0; i <= matrix->columns; i++) printf("# of elements %d\n", workspace[i]);
@@ -312,8 +318,8 @@ Matrix* transposeMatrix( Matrix *matrix )
   //printf("%d\n", matrix->quantity);
 
   //cumulative sum
-  int v = 0;
-  for ( int i = 0; i < matrix->columns; i++ )
+  unsigned int v = 0;
+  for ( unsigned int i = 0; i < matrix->columns; i++ )
   {
     transpose->row_ptr[i] = v;
     v += workspace[i];
@@ -326,10 +332,10 @@ Matrix* transposeMatrix( Matrix *matrix )
   //for (int i = 0; i <= matrix->columns; i++) printf("%d | %d\n", workspace[i], transpose->row_ptr[i]);
 
   //fill transpose with values and row indeces
-  int w = 0;
-  for ( int i = 0; i < matrix->rows; i++ )
+  unsigned int w = 0;
+  for ( unsigned int i = 0; i < matrix->rows; i++ )
   {
-    for ( int j = matrix->row_ptr[i]; j < matrix->row_ptr[i + 1]; j++ )
+    for ( unsigned int j = matrix->row_ptr[i]; j < matrix->row_ptr[i + 1]; j++ )
     {
       //Place matrix(i,j) into transpose(j,i)
       //w = workspace[matrix->col_ind[j]]++;
@@ -356,22 +362,22 @@ bool sumDim( Matrix *A, Matrix *B )
 
 Matrix *add( Matrix *A, Matrix *B )
 {
-  int temp[2] = {( A->rows ), ( A->columns )};
-  int y = 0;
+  unsigned int temp[2] = {( A->rows ), ( A->columns )};
+  unsigned int y = 0;
 
   //flag that indicates that something summed up to 0
   bool zeroSum = false;
-  int zeroQuantity = 0;
+  unsigned int zeroQuantity = 0;
 
   Matrix *sum = makeDataStructure( A->quantity + B->quantity, temp, 'r');
-  int *workspaceA = calloc( A->columns, sizeof( int ) );
+  unsigned int *workspaceA = calloc( A->columns, sizeof( unsigned int ) );
   int *workspaceB = calloc( B->columns, sizeof( int ) );
 
-  for (int i = 0; i < A->rows; i++)
+  for ( unsigned int i = 0; i < A->rows; i++ )
   {
     sum->row_ptr[i] = y;
 
-    for (int a = A->row_ptr[i]; a < A->row_ptr[i + 1]; a++)
+    for ( unsigned int a = A->row_ptr[i]; a < A->row_ptr[i + 1]; a++ )
     {
       //Mark that column of index A->col_ind[a] has been read on this row
       workspaceA[A->col_ind[a]] = i + 1;
@@ -381,7 +387,7 @@ Matrix *add( Matrix *A, Matrix *B )
 
     }
 
-    for (int b = B->row_ptr[i]; b < B->row_ptr[i + 1]; b++)
+    for ( unsigned int b = B->row_ptr[i]; b < B->row_ptr[i + 1]; b++ )
     {
       //Check whether element already have been read
       if ( workspaceA[B->col_ind[b]] <= i )
@@ -396,10 +402,10 @@ Matrix *add( Matrix *A, Matrix *B )
     }
 
 
-    for (int j = sum->row_ptr[i]; j < y; j++)
+    for ( unsigned int j = sum->row_ptr[i]; j < y; j++ )
     {
       //when sum up to 0
-      if (workspaceB[sum->col_ind[j]]  == 0)
+      if ( workspaceB[sum->col_ind[j]]  == 0 )
       {
         zeroSum = true;
         zeroQuantity++;
@@ -407,7 +413,7 @@ Matrix *add( Matrix *A, Matrix *B )
       sum->val[j] = workspaceB[sum->col_ind[j]];
     }
 
-    if (zeroSum)
+    if ( zeroSum )
     {
       // for (int g = sum->row_ptr[i]; g < y; ++g)
       // {
@@ -438,11 +444,11 @@ Matrix *add( Matrix *A, Matrix *B )
 }
 
 //sort including a excluding b
-void backwardinsertSort( Matrix *mx, int a, int b )
+void backwardinsertSort( Matrix *mx, unsigned int a, unsigned int b )
 {
-  int colToIns;
+  unsigned int colToIns;
   int valToIns;
-  int valPos;
+  unsigned int valPos;
   //printf("a is: %d | b is : %d\n",a, b );
   for ( int i = ( a + 1 ); i < b; i++ )
   {
@@ -472,18 +478,18 @@ bool productDim( Matrix *A, Matrix *B )
 
 Matrix *multiply( Matrix *A, Matrix *B )
 {
-  int temp[2] = {( A->rows ), ( B->columns )};
-  int y = 0;
+  unsigned int temp[2] = {( A->rows ), ( B->columns )};
+  unsigned int y = 0;
 
   //flag that indicates that something summed up to 0
   //bool zeroProd = false;
   //int zeroQuantity = 0;
 
   Matrix *product = makeDataStructure( A->quantity + B->quantity, temp, 'r');
-  int *workspaceA = calloc( A->columns, sizeof( int ) );
+  unsigned int *workspaceA = calloc( A->columns, sizeof( unsigned int ) );
   int *workspaceB = calloc( B->columns, sizeof( int ) );
   
-  for ( int i = 0; i < A->rows; i++ )
+  for ( unsigned int i = 0; i < A->rows; i++ )
   {
 
     //
@@ -492,9 +498,10 @@ Matrix *multiply( Matrix *A, Matrix *B )
 
     product->row_ptr[i] = y;
 
-    for ( int j = B->row_ptr[i]; j < B->row_ptr[i + 1]; j++ )
+    for ( unsigned int j = B->row_ptr[i]; j < B->row_ptr[i + 1]; j++ )
     {
-      for ( int k = A->row_ptr[B->col_ind[j]]; k < A->row_ptr[B->col_ind[j] + 1]; k++ )
+      for ( unsigned int k = A->row_ptr[B->col_ind[j]];
+        k < A->row_ptr[B->col_ind[j] + 1]; k++ )
       {
         if ( workspaceA[A->col_ind[k]] < i + 1 )
         {
@@ -525,7 +532,7 @@ Matrix *multiply( Matrix *A, Matrix *B )
   return product;
 }
 
-bool checkOnMx( Matrix *matrix, int row, int column )
+bool checkOnMx( Matrix *matrix, unsigned int row, unsigned int column )
 {
   for ( int i = matrix->row_ptr[row]; i < matrix->row_ptr[row + 1]; i++ )
   {

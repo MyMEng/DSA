@@ -9,8 +9,8 @@
   multiple entries  V
   unsigned  int     V
 
-    Safe mode : optymalizacja wczytywamnia: reading with spaces
-     + testy
+    Safe mode : optymalizacja wczytywamnia: reading with spaces,
+    zastosuj regule wielu wejsc + testy
   */
 
 #include "matrix.h"
@@ -22,15 +22,15 @@ Perform stage 1:
 - inspect X, i.e., print the element, row and column at row r, column c.
 */
 
-void stage1( char* X_name, int r, int c ) {
+void stage1( char* X_name, unsigned int r, unsigned int c ) {
 
   char tempstr[BUFFSIZE];
-  int tempint[3];
+  unsigned int tempint[2];
   time_t t1, t2;
   t1 = clock(  );
 
   //number of non-0 elements in matrix
-  int n = 0;
+  unsigned int n = 0;
 
   //Read the file; "r"-read only
   FILE *file = fopen( X_name, "r" );
@@ -74,12 +74,12 @@ Perform stage 2:
 void stage2( char* R_name, char* X_name )
 {
   char tempstr[BUFFSIZE];
-  int tempint[3];
+  unsigned int tempint[2];
   time_t t1, t2;
   t1 = clock(  );
 
   //number of non-0 elements in matrix
-  int n = 0;
+  unsigned int n = 0;
 
   //Read the file; "r"-read only
   FILE *file = fopen( R_name, "r" );
@@ -135,15 +135,15 @@ Perform stage 3:
 void stage3( char* R_name, char* X_name, char* Y_name ) {
 
   char tempstrX[BUFFSIZE];
-  int tempintX[3];
+  unsigned int tempintX[2];
   char tempstrY[BUFFSIZE];
-  int tempintY[3];
+  unsigned int tempintY[2];
   time_t t1, t2;
   t1 = clock(  );
 
   //number of non-0 elements in matrix
-  int nX = 0;
-  int nY = 0;
+  unsigned int nX = 0;
+  unsigned int nY = 0;
 
   //Read the file; "r"-read only
   FILE *fileX = fopen( X_name, "r" );
@@ -206,15 +206,15 @@ Perform stage 4:
 void stage4( char* R_name, char* X_name, char* Y_name ) {
 
   char tempstrX[BUFFSIZE];
-  int tempintX[3];
+  unsigned int tempintX[2];
   char tempstrY[BUFFSIZE];
-  int tempintY[3];
+  unsigned int tempintY[2];
   time_t t1, t2;
   t1 = clock(  );
 
   //number of non-0 elements in matrix
-  int nX = 0;
-  int nY = 0;
+  unsigned int nX = 0;
+  unsigned int nY = 0;
 
   //Read the file; "r"-read only
   FILE *fileX = fopen( X_name, "r" );
@@ -284,6 +284,11 @@ the correct function for the requested stage.
 
 int main( int argc, char* argv[] ) {
   if     ( !strcmp( argv[ 1 ], "stage1" ) ) {
+    if ( atoi( argv[3] ) < 0 || atoi( argv[4] ) < 0 )
+    {
+      fprintf ( stderr, "Uncompatible row or column.\n" );
+      exit ( EXIT_FAILURE );
+    }
     stage1( argv[ 2 ], atoi( argv[ 3 ] ), atoi( argv[ 4 ] ) );
   }
   else if( !strcmp( argv[ 1 ], "stage2" ) ) {
