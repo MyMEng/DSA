@@ -457,8 +457,27 @@ void reallocMatrix( Matrix *A, Matrix *B, char c )
     memcpy( B->val, A->val, B->quantity * sizeof( int ) );
     memcpy( B->row_ptr, A->row_ptr, ( B->rows + 1 ) * sizeof( unsigned int ) );
     memcpy( B->col_ind, A->col_ind, B->quantity * sizeof( unsigned int ) );
-  } else {  //increase size by 2
-    //TROLLOLOLLOLOLOLO
+  } else if( c ==  '>' ) {  //increase size two times 2
+
+    int *currentValues = A->val;
+    unsigned int *currentCol = A->col_ind;
+
+    int *newValues = calloc( 2 * B->quantity, sizeof( int ) );
+    unsigned int *newCol = calloc( 2 * B->quantity, sizeof( unsigned int ) );
+
+    checkMem( newValues );
+    checkMem( newCol );
+
+    memcpy( newValues, currentValues, B->quantity * sizeof( int ) );
+    memcpy( newCol, currentCol, B->quantity * sizeof( unsigned int ) );
+
+    B->val = newValues;
+    B->col_ind = newCol;
+    B->quantity = 2 * B->quantity;
+
+    free( currentValues );
+    free( currentCol ); 
+
   }
 
 }
@@ -505,6 +524,8 @@ Matrix *multiply( Matrix *A, Matrix *B )
   bool zeroProd = false;
   int zeroQuantity = 0;
 
+  unsigned int z = 0;
+
   Matrix *product = makeDataStructure( A->quantity + B->quantity, temp, 'r');
   unsigned int *workspaceA = calloc( A->columns, sizeof( unsigned int ) );
   int *workspaceB = calloc( B->columns, sizeof( int ) );
@@ -512,10 +533,11 @@ Matrix *multiply( Matrix *A, Matrix *B )
   for ( unsigned int i = 0; i < A->rows; i++ )
   {
 
-    //
     //check for memory realocation
-    //reallocMatrix( product, shrinkedProduct, '>' );
-    //
+    if ( z + product->columns > product->quantity )
+    {
+      reallocMatrix( product, product, '>' );
+    }
 
     product->row_ptr[i] = y;
 
@@ -545,6 +567,10 @@ Matrix *multiply( Matrix *A, Matrix *B )
       }
 
       product->val[l] = workspaceB[product->col_ind[l]];
+
+      //count number of elements in new matrix
+      z++;
+
     }
 
     if ( zeroProd )

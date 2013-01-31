@@ -9,6 +9,8 @@
   multiple entries  V
   unsigned  int     V
 
+  //poprawic fill with nombers do unsigned integera
+
     Safe mode : optymalizacja wczytywamnia: reading with spaces,
     zastosuj regule wielu wejsc + testy
   */
