@@ -5,6 +5,10 @@
     0,002
     0,003
     0,010
+
+  optymalizacja wczytywania + testy
+
+    Safe mode : reading with spaces, multiple entries, unsigned int
   */
 
 #include "matrix.h"
@@ -163,6 +167,9 @@ void stage3( char* R_name, char* X_name, char* Y_name ) {
   if( sumDim( mxA, mxB ) )
   {
     sum = add( mxA, mxB );
+  } else {
+      fprintf ( stderr, "Uncompatible dimmensions.\n" );
+      exit ( EXIT_FAILURE );
   }
 
   //writeMatrixInFile( mxA, "A.txt" );
@@ -194,7 +201,59 @@ Perform stage 4:
 
 void stage4( char* R_name, char* X_name, char* Y_name ) {
 
-  // fill in this function with solution
+  char tempstrX[BUFFSIZE];
+  int tempintX[3];
+  char tempstrY[BUFFSIZE];
+  int tempintY[3];
+  time_t t1, t2;
+  t1 = clock(  );
+
+  //number of non-0 elements in matrix
+  int nX = 0;
+  int nY = 0;
+
+  //Read the file; "r"-read only
+  FILE *fileX = fopen( X_name, "r" );
+  FILE *fileY = fopen( Y_name, "r" );
+  if ( checkFile( fileX ) && checkFile( fileY ) )
+  {
+    initializeReading( fileX, &nX, tempintX, tempstrX );
+    initializeReading( fileY, &nY, tempintY, tempstrY );
+  }
+
+  //Allocate space for matrix | 'r' = row compressed form
+  Matrix *mxA = makeDataStructure( nX, tempintX, 'r' );
+  Matrix *mxB = makeDataStructure( nY, tempintY, 'r' );
+
+  //Read data into a structure and do not sort them
+  organiseData( mxA, fileX, 'T'/*'N'*/ );
+  organiseData( mxB, fileY, 'T'/*'N'*/ );
+
+  fclose( fileX );
+  fclose( fileY );
+
+  //If dimmensions of matrices are correct sum them
+  Matrix *product = NULL;
+  if( productDim( mxA, mxB ) )
+  {
+    product = multiply( mxB, mxA );
+  } else {
+      fprintf ( stderr, "Uncompatible dimmensions.\n" );
+      exit ( EXIT_FAILURE );
+  }
+
+  //write transpose to a file
+  writeMatrixInFile( product, R_name );
+
+  //Free the memory after data structure
+  freeMatrixMemory( product );
+  freeMatrixMemory( mxA );
+  freeMatrixMemory( mxB );
+
+  t2 = clock(  );
+
+  printf("number of non-empty lines: X=%d | Y=%d\nTime elapsed %.5fs\n",
+    nX, nY, ( difftime( t2, t1 ) / CLOCKS_PER_SEC ) );
 
 }
 
@@ -208,7 +267,9 @@ Perform stage 5:
 
 void stage5( char* R_name, char* X_name[], int l ) {
 
-  // fill in this function with solution
+  //Calculate final dimmension and create such matrix
+  //
+  //Check from the very begining whether it makes sens to start multiplying it
 
 }
 

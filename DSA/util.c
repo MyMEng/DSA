@@ -409,11 +409,18 @@ Matrix *add( Matrix *A, Matrix *B )
 
     if (zeroSum)
     {
+      // for (int g = sum->row_ptr[i]; g < y; ++g)
+      // {
+      //   printf("O LOL:%d | %d | %d | #0 = %d\n", i, sum->col_ind[g], sum->val[g], zeroQuantity);
+      // }
 
-      for (int g = sum->row_ptr[i]; g < y; ++g)
-      {
-        printf("O LOL:%d | %d | %d | #0 = %d\n", i, sum->col_ind[g], sum->val[g], zeroQuantity);
-      }
+
+      backwardinsertSort( sum, sum->row_ptr[i], y );
+
+      // for (int g = sum->row_ptr[i]; g < y; ++g)
+      // {
+      //   printf("O LOL:%d | %d | %d | #0 = %d\n", i, sum->col_ind[g], sum->val[g], zeroQuantity);
+      // }
       y -= zeroQuantity;
 
       zeroQuantity = 0;
@@ -421,7 +428,7 @@ Matrix *add( Matrix *A, Matrix *B )
     }
 
   }
-  sum->row_ptr[A->columns] = y;
+  sum->row_ptr[A->rows] = y;
 
   free( workspaceA );
   free( workspaceB );
@@ -430,9 +437,91 @@ Matrix *add( Matrix *A, Matrix *B )
   return sum;
 }
 
+//sort including a excluding b
+void backwardinsertSort( Matrix *mx, int a, int b )
+{
+  int colToIns;
+  int valToIns;
+  int valPos;
+  //printf("a is: %d | b is : %d\n",a, b );
+  for ( int i = ( a + 1 ); i < b; i++ )
+  {
+    valPos = i;
+    colToIns = mx->col_ind[valPos];
+    valToIns = mx->val[valPos];
+    while( ( valPos > a ) && ( valToIns > mx->val[valPos - 1] ) )
+    {
+      mx->col_ind[valPos] = mx->col_ind[valPos - 1];
+      mx->val[valPos] = mx->val[valPos - 1];
+      valPos--;
+    }
+    mx->col_ind[valPos] = colToIns;
+    mx->val[valPos] = valToIns;
+  }
+}
+
+bool productDim( Matrix *A, Matrix *B )
+{
+  if( ( A->columns == B->rows ) )
+  {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+Matrix *multiply( Matrix *A, Matrix *B )
+{
+  int temp[2] = {( A->rows ), ( B->columns )};
+  int y = 0;
+
+  //flag that indicates that something summed up to 0
+  //bool zeroProd = false;
+  //int zeroQuantity = 0;
+
+  Matrix *product = makeDataStructure( A->quantity + B->quantity, temp, 'r');
+  int *workspaceA = calloc( A->columns, sizeof( int ) );
+  int *workspaceB = calloc( B->columns, sizeof( int ) );
+  
+  for ( int i = 0; i < A->rows; i++ )
+  {
+
+    //
+    //check for memory realocation
+    //
+
+    product->row_ptr[i] = y;
+
+    for ( int j = B->row_ptr[i]; j < B->row_ptr[i + 1]; j++ )
+    {
+      for ( int k = A->row_ptr[B->col_ind[j]]; k < A->row_ptr[B->col_ind[j] + 1]; k++ )
+      {
+        if ( workspaceA[A->col_ind[k]] < i + 1 )
+        {
+          workspaceB[A->col_ind[k]] = i + 1;
+          product->col_ind[y] = A->col_ind[k];
+          y++;
+          workspaceB[A->col_ind[k]] = /*( B->val ? B->val[j] : 1 )*/B->val[j] * A->val[k];
+        } else {
+          workspaceB[A->col_ind[k]] += /*( B->val ? B->val[j] : 1 )*/B->val[j] * A->val[k];
+        }
+      }
+    }
+    for (int l = product->row_ptr[i]; l < y; l++)
+    {
+      product->val[l] = workspaceB[product->col_ind[l]];
+    }
+  }
+  product->row_ptr[B->columns] = y;
 
 
+  free( workspaceA );
+  free( workspaceB );
 
+  //remove extra space
+
+  return product;
+}
 
 
 

@@ -73,4 +73,10 @@ bool sumDim( Matrix *A, Matrix *B );
 //Add matrices A and B
 Matrix *add( Matrix *A, Matrix *B );
 
+void backwardinsertSort( Matrix *mx, int a, int b );
+
+bool productDim( Matrix *mxA, Matrix *mxB );
+
+Matrix *multiply( Matrix *mxA, Matrix *mxB );
+
 #endif

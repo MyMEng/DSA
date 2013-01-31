@@ -47,11 +47,11 @@ relating to functional correctness.
 
 [X] Stage 2 : Implemented matrix transpose                           ( 10%)
 
-[_] Stage 3 : Implemented matrix addition                            ( 10%)
+[X] Stage 3 : Implemented matrix addition                            ( 10%)
 
-[_] Stage 4 : Implemented matrix multiplication                      ( 20%)
+[X] Stage 4 : Implemented matrix multiplication                      ( 20%)
 
-[_] Stage 5 : Implemented matrix chain multiplication                ( 20%)
+[X] Stage 5 : Implemented matrix chain multiplication                ( 20%)
 
     Extra   : Efficiency of stages 2 to 5 in comparison with cohort  ( 20%)
 
@@ -67,6 +67,6 @@ Any other documentation, notes or comments that you think are important
 
 -------------------------------------------------------------------------------
 
-[...]
+[	The quickes way to transpose is to edit directly the file or read in to array 3xquantity and change indeces]
 
 
