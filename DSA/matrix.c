@@ -6,8 +6,10 @@
     0,003
     0,010
 
-    Safe mode : optymalizacja wczytywamnia: reading with spaces,
-      multiple entries, unsigned int
+  multiple entries  V
+  unsigned  int     V
+
+    Safe mode : optymalizacja wczytywamnia: reading with spaces
      + testy
   */
 
@@ -46,6 +48,8 @@ void stage1( char* X_name, int r, int c ) {
   //Data rerieval
   print(matrixInstance, r, c);
 
+  //printf("%s\n", ( checkOnMx( matrixInstance, 1, 3 ) ) ? "true" : "false" );
+  //printf("%s\n", ( checkOnMx( matrixInstance, 4, 1 ) ) ? "true" : "false" );
   //writeMatrixInFile( matrixInstance, "LOL.txt" );
 
   //Free the memory after data structure
