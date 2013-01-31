@@ -436,11 +436,31 @@ Matrix *add( Matrix *A, Matrix *B )
   }
   sum->row_ptr[A->rows] = y;
 
+  //printf("tyle elementow ostatecznie: %d\n", sum->row_ptr[A->rows]);
+  //remove extra space in sum matrix
+  Matrix *shrinkedSum = makeDataStructure( y, temp, 'r');
+  reallocMatrix( sum, shrinkedSum, '<' );
+  //val[]//col-int[]
+
+
   free( workspaceA );
   free( workspaceB );
-  //remove extra space in sum matrix
+  freeMatrixMemory( sum );
 
-  return sum;
+  return shrinkedSum;
+}
+
+void reallocMatrix( Matrix *A, Matrix *B, char c )
+{
+  if ( c == '<' ) //decrease the size to fit exactly
+  {
+    memcpy( B->val, A->val, B->quantity * sizeof( int ) );
+    memcpy( B->row_ptr, A->row_ptr, ( B->rows + 1 ) * sizeof( unsigned int ) );
+    memcpy( B->col_ind, A->col_ind, B->quantity * sizeof( unsigned int ) );
+  } else {  //increase size by 2
+    //TROLLOLOLLOLOLOLO
+  }
+
 }
 
 //sort including a excluding b
@@ -482,8 +502,8 @@ Matrix *multiply( Matrix *A, Matrix *B )
   unsigned int y = 0;
 
   //flag that indicates that something summed up to 0
-  //bool zeroProd = false;
-  //int zeroQuantity = 0;
+  bool zeroProd = false;
+  int zeroQuantity = 0;
 
   Matrix *product = makeDataStructure( A->quantity + B->quantity, temp, 'r');
   unsigned int *workspaceA = calloc( A->columns, sizeof( unsigned int ) );
@@ -494,6 +514,7 @@ Matrix *multiply( Matrix *A, Matrix *B )
 
     //
     //check for memory realocation
+    //reallocMatrix( product, shrinkedProduct, '>' );
     //
 
     product->row_ptr[i] = y;
@@ -508,28 +529,46 @@ Matrix *multiply( Matrix *A, Matrix *B )
           workspaceA[A->col_ind[k]] = i + 1;
           product->col_ind[y] = A->col_ind[k];
           y++;
-          workspaceB[A->col_ind[k]] = /*( B->val ? B->val[j] : 1 )*/B->val[j] * A->val[k];
+          workspaceB[A->col_ind[k]] = B->val[j] * A->val[k];
         } else {
-          workspaceB[A->col_ind[k]] += /*( B->val ? B->val[j] : 1 )*/B->val[j] * A->val[k];
+          workspaceB[A->col_ind[k]] += B->val[j] * A->val[k];
         }
       }
     }
     for (int l = product->row_ptr[i]; l < y; l++)
     {
+
+      if ( workspaceB[product->col_ind[l]]  == 0 )
+      {
+        zeroProd = true;
+        zeroQuantity++;
+      }
+
       product->val[l] = workspaceB[product->col_ind[l]];
     }
+
+    if ( zeroProd )
+    {
+
+      backwardinsertSort( product, product->row_ptr[i], y );
+
+      y -= zeroQuantity;
+
+      zeroQuantity = 0;
+      zeroProd = false;
+    }
+
   }
   product->row_ptr[B->columns] = y;
 
-  //zero jak choj "2*-1 + -2*1 = 0"
-
+  Matrix *shrinkedProduct = makeDataStructure( y, temp, 'r');
+  reallocMatrix( product, shrinkedProduct, '<' );
 
   free( workspaceA );
   free( workspaceB );
+  freeMatrixMemory( product );  
 
-  //remove extra space
-
-  return product;
+  return shrinkedProduct;
 }
 
 bool checkOnMx( Matrix *matrix, unsigned int row, unsigned int column )
@@ -538,6 +577,7 @@ bool checkOnMx( Matrix *matrix, unsigned int row, unsigned int column )
   {
     if ( matrix->col_ind[i] == column )
     {
+      fprintf ( stderr, "Double entrie in same row: %d/col: %d.\n", row, column );
       return true;
     }
   }

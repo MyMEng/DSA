@@ -83,4 +83,7 @@ Matrix *multiply( Matrix *mxA, Matrix *mxB );
 //search for element in matrix
 bool checkOnMx( Matrix *matrix, unsigned int row, unsigned int column );
 
+//Realloc matrix if too much or too little space left
+void reallocMatrix( Matrix *A, Matrix *B, char c );
+
 #endif

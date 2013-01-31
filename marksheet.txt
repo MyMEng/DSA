@@ -16,7 +16,7 @@ course : [Mathematics & Computer Science]
 So that we can improve the assignment in the future, let us know roughly how
 long you spent on it (i.e., how much effort you put into it):
 
-effort : [About 3 weeks with average 6 hours a day.]
+effort : [About 3 weeks with average 4 hours a day.]
 
 -------------------------------------------------------------------------------
 
@@ -67,6 +67,11 @@ Any other documentation, notes or comments that you think are important
 
 -------------------------------------------------------------------------------
 
-[	The quickes way to transpose is to edit directly the file or read in to array 3xquantity and change indeces]
+[	The quickes way to transpose is to edit directly the file or read in to array 3xquantity and change indeces
+
+	in sum if sum up to 0 I emove such record of matrix same in multiplication
+
+	GENERALly i was inspired by book which influenced my work significantly
+	]
 
 
