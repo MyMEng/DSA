@@ -73,4 +73,6 @@ bool sumDim( Matrix *A, Matrix *B );
 //Add matrices A and B
 Matrix *add( Matrix *A, Matrix *B );
 
+int parseEntry(char **string, int *dims);
+int countLines(char* string);
 #endif

@@ -1,4 +1,5 @@
 #include "util.h"
+#include <ctype.h>
 
 int numberOfLines(FILE *file)
 {
@@ -430,11 +431,104 @@ Matrix *add( Matrix *A, Matrix *B )
   return sum;
 }
 
+// Adding additional features
+/**
+ * Create an empty matrix
+ */
+Matrix* newMatrix() {
+    Matrix* new = malloc(sizeof(Matrix));
+    new->col_ind = NULL;
+    new->row_ptr = NULL;
+    new->val = NULL;
+    new->columns = 0;
+    new->quantity = 0;
+    new->rows = 0;
+    
+    return new;
+}
 
+/**
+ * Create a matrix with given dimensions
+ */
+Matrix* newMatrixWithDim(int columns, int rows) {
+    Matrix* new = newMatrix();
+    new->rows = rows;
+    new->columns = columns;
+    
+    return new;
+}
 
+int parseEntry(char **string, int *dims)
+{
+    //How many arguments were read
+    int id = 0;
+    char *start = *string;
+    char *header = NULL;
+    
+    
+    // Splitting the string in two
+    header = strtok_r(start, "\n", string);
+    
+    id = sscanf(header, "%d,%d,%d/n", &dims[0], &dims[1], &dims[2]);
+    
+    // Need to return the error
 
+    return id;
+}
 
+/**
+ * Compaing two matrices, assuming they are sorted
+ */
+int compareMatrices(const Matrix* a, const Matrix* b)
+{
+    if (a->rows != b->rows) return 0;
+    if (a->columns != b->columns) return 0;
+    if (a->quantity != b->quantity) return 0;
+    int i;
+    for (i = 0; i < a->quantity; i++) {
+        if (a->col_ind[i] != b->col_ind[i]) return 0;
+        if (a->val[i] != b->val[i]) return 0;
+    }
+    for (i = 0; i < a->rows + 1; i++) {
+        if (a->row_ptr[i] != b->row_ptr[i]) return 0;
+    }
+    return 1;
+}
 
+int countLines(char* string)
+{
+    int i = 0;
+    while (string != NULL)
+    {
+        if (string[0] != '\0') {
+            string++;
+            if (isalnum(string[0])) {
+                i += 1;
+            }
+        }
+        else {
+            break;
+        }
+        string = strchr(string, '\n');
+    }
+    return i;
+}
+
+/**
+ * Create a matrix from a string
+ */
+Matrix* newMatrixFromString(char* str)
+{
+    Matrix* m = newMatrix();
+    char* head = str;
+    int dims[] = {0, 0, 0, 0};
+    int result = parseEntry(&head, dims);
+    m->rows = dims[0];
+    m->columns = dims[1];
+    // Here we count the number of new lines to allocate the elements
+    return NULL;
+    
+}
 
 // //It;s not transpose it's convert
 // //
