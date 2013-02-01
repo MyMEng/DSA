@@ -1,16 +1,9 @@
-//Backup 1
-
-  /*
-    0,001
-    0,002
-    0,003
-    0,010
-
+/*
   multiple entries  V
-  unsigned  int     V
+  reading with spaces,
+  zastosuj regule wielu wejsc
 
-    Safe mode : optymalizacja wczytywamnia: reading with spaces,
-    zastosuj regule wielu wejsc + testy
+  testy
   */
 
 #include "matrix.h"
@@ -84,7 +77,7 @@ void stage2( char* R_name, char* X_name )
   unsigned int n = 0;
 
   //Read the file; "r"-read only
-  FILE *file = fopen( R_name, "r" );
+  FILE *file = fopen( X_name, "r" );
   if ( checkFile( file ) )
   {
     initializeReading( file, &n, tempint, tempstr );
@@ -109,7 +102,7 @@ void stage2( char* R_name, char* X_name )
 
 
   //write transpose to a file
-  writeMatrixInFile( transpose, X_name );
+  writeMatrixInFile( transpose, R_name );
 
   //Free the memory after data structure
   freeMatrixMemory( transpose );
@@ -137,36 +130,39 @@ Perform stage 3:
 void stage3( char* R_name, char* X_name, char* Y_name )
 {
 
-  char tempstrX[BUFFSIZE];
-  unsigned int tempintX[2];
-  char tempstrY[BUFFSIZE];
-  unsigned int tempintY[2];
-  time_t t1, t2;
-  t1 = clock(  );
+  // char tempstrX[BUFFSIZE];
+  // unsigned int tempintX[2];
+  // char tempstrY[BUFFSIZE];
+  // unsigned int tempintY[2];
+  // time_t t1, t2;
+  // t1 = clock(  );
 
-  //number of non-0 elements in matrix
-  unsigned int nX = 0;
-  unsigned int nY = 0;
+  // //number of non-0 elements in matrix
+  // unsigned int nX = 0;
+  // unsigned int nY = 0;
 
-  //Read the file; "r"-read only
-  FILE *fileX = fopen( X_name, "r" );
-  FILE *fileY = fopen( Y_name, "r" );
-  if ( checkFile( fileX ) && checkFile( fileY ) )
-  {
-    initializeReading( fileX, &nX, tempintX, tempstrX );
-    initializeReading( fileY, &nY, tempintY, tempstrY );
-  }
+  // //Read the file; "r"-read only
+  // FILE *fileX = fopen( X_name, "r" );
+  // FILE *fileY = fopen( Y_name, "r" );
+  // if ( checkFile( fileX ) && checkFile( fileY ) )
+  // {
+  //   initializeReading( fileX, &nX, tempintX, tempstrX );
+  //   initializeReading( fileY, &nY, tempintY, tempstrY );
+  // }
 
-  //Allocate space for matrix | 'r' = row compressed form
-  Matrix *mxA = makeDataStructure( nX, tempintX, 'r' );
-  Matrix *mxB = makeDataStructure( nY, tempintY, 'r' );
+  // //Allocate space for matrix | 'r' = row compressed form
+  // Matrix *mxA = makeDataStructure( nX, tempintX, 'r' );
+  // Matrix *mxB = makeDataStructure( nY, tempintY, 'r' );
 
-  //Read data into a structure and do not sort them
-  organiseData( mxA, fileX, 'T'/*'N'*/ );
-  organiseData( mxB, fileY, 'T'/*'N'*/ );
+  // //Read data into a structure and do not sort them
+  // organiseData( mxA, fileX, 'T'/*'N'*/ );
+  // organiseData( mxB, fileY, 'T'/*'N'*/ );
 
-  fclose( fileX );
-  fclose( fileY );
+  // fclose( fileX );
+  // fclose( fileY );
+
+   Matrix* mxB = load_file(Y_name);
+   Matrix* mxA = load_file(X_name);
 
 
   //If dimmensions of matrices are correct sum them
@@ -191,10 +187,10 @@ void stage3( char* R_name, char* X_name, char* Y_name )
   freeMatrixMemory( mxA );
   freeMatrixMemory( mxB );
 
-  t2 = clock(  );
+  // t2 = clock(  );
 
-  printf("number of non-empty lines: X=%d | Y=%d\nTime elapsed %.5fs\n",
-    nX, nY, ( difftime( t2, t1 ) / CLOCKS_PER_SEC ) );
+  // printf("number of non-empty lines: X=%d | Y=%d\nTime elapsed %.5fs\n",
+  //   nX, nY, ( difftime( t2, t1 ) / CLOCKS_PER_SEC ) );
 
 }
 
@@ -272,6 +268,9 @@ void stage4( char* R_name, char* X_name, char* Y_name )
 
   t2 = clock(  );
 
+   printf("Time elapsed %.5fs\n",
+    ( difftime( t2, t1 ) / CLOCKS_PER_SEC ) );
+
   // printf("number of non-empty lines: X=%d | Y=%d\nTime elapsed %.5fs\n",
   //   nX, nY, ( difftime( t2, t1 ) / CLOCKS_PER_SEC ) );
 
@@ -288,6 +287,12 @@ Perform stage 5:
 void stage5( char* R_name, char* X_name[], int l )
 {
 
+  if ( l < 2 )
+  {
+    fprintf ( stderr, "Wrong number of arguments.\n" );
+    exit ( EXIT_FAILURE );
+  }
+
   char tempstrX[BUFFSIZE];
   unsigned int tempintX[2];
   char tempstrY[BUFFSIZE];
@@ -298,6 +303,7 @@ void stage5( char* R_name, char* X_name[], int l )
   //number of non-0 elements in matrix
   unsigned int nX = 0;
   unsigned int nY = 0;
+  unsigned int count = 0;
 
   //Final dimmension of matrix
   unsigned int totalRow = 0;
@@ -340,8 +346,46 @@ void stage5( char* R_name, char* X_name[], int l )
     fclose( fileY );
 
   }
-  //unsigned int tempint[2] = {totalRow, totalCol};
-  //Matrix *product = makeDataStructure( totalElem, tempint, 'r' );
+  unsigned int tempint[2] = {totalRow, totalCol};
+  Matrix *product = makeDataStructure( totalElem, tempint, 'r' );
+
+
+  //fill product with matrix A
+  Matrix* mOne = load_file( X_name[0] );
+  loadMatrix( product, mOne );
+  freeMatrixMemory( mOne );
+
+
+  for( int i = 1; i < l; i++ )
+  {
+    Matrix* mp = load_file( X_name[i] );
+
+    //Duplicate the product
+    Matrix *productDuplicate = duplicate( product );
+    
+
+    chainMultiply( productDuplicate, mp, product, &count );
+  
+    freeMatrixMemory( mp );
+    freeMatrixMemory( productDuplicate );
+
+  }
+
+  if ( count == product->row_ptr[product->rows] )
+  {
+    Matrix *shrinkedProduct = makeDataStructure( count, tempint, 'r');
+    reallocMatrix( product, shrinkedProduct, '<' );
+    freeMatrixMemory( product );
+
+    //write transpose to a file
+    writeMatrixInFile( shrinkedProduct, R_name );
+
+    //Free the memory after data structure
+    freeMatrixMemory( shrinkedProduct );
+
+  } else {
+    fprintf( stderr, "Error with multiplying. Wrong algorithm.\n" );
+  }
 
 
   //Save effect of multiplying each pair in 'product' matrix,
@@ -372,17 +416,39 @@ void stage5( char* R_name, char* X_name[], int l )
   //   freeMatrixMemory( mxB );
 
 
-  // //write transpose to a file
-  // writeMatrixInFile( product, R_name );
 
-  // //Free the memory after data structure
-  // freeMatrixMemory( product );
 
   t2 = clock(  );
 
-  printf("number of non-empty lines: X=%d | Y=%d\nTime elapsed %.5fs\n",
-    nX, nY, ( difftime( t2, t1 ) / CLOCKS_PER_SEC ) );
 
+  printf("%dTime elapsed %.5fs\n",totalElem, ( difftime( t2, t1 ) / CLOCKS_PER_SEC ) );
+  // printf("number of non-empty lines: X=%d | Y=%d\nTime elapsed %.5fs\n",
+  //   nX, nY, ( difftime( t2, t1 ) / CLOCKS_PER_SEC ) );
+
+}
+
+void sort( char* R_name, char* X_name )
+{
+     Matrix* mx = load_file(X_name);
+
+    //double transpose is like sort
+  //Transpose read matrix
+    Matrix *transpose = transposeMatrix( mx );
+    Matrix *srt = transposeMatrix( transpose );
+
+  //Free the memory after data structure
+  freeMatrixMemory( mx );
+  freeMatrixMemory( transpose );
+
+
+  //print(transpose, 0, 0);
+
+
+  //write transpose to a file
+  writeMatrixInFile( srt, R_name );
+
+  //Free the memory after data structure
+  freeMatrixMemory( srt );
 }
 
 /*
@@ -410,6 +476,9 @@ int main( int argc, char* argv[] ) {
   }
   else if( !strcmp( argv[ 1 ], "stage5" ) ) {
     stage5( argv[ 2 ], argv + 3, argc - 3 );
+  }
+  else if( !strcmp( argv[ 1 ], "sort" ) ) {
+    sort( argv[ 2 ], argv[ 3 ] );
   }
 
   return 0;

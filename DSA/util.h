@@ -87,6 +87,11 @@ bool checkOnMx( Matrix *matrix, unsigned int row, unsigned int column );
 void reallocMatrix( Matrix *A, Matrix *B, char c );
 
 //Matrix *chainMultiply( Matrix *A, Matrix *B, Matrix *product )
+void chainMultiply( Matrix *A, Matrix *B, Matrix *product, unsigned int *count );
+
+void loadMatrix( Matrix *destination, Matrix *source );
+
+Matrix *duplicate( Matrix *m );
 
 int parseEntry( char **string, int *dims );
 int countLines( char *string );

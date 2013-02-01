@@ -82,17 +82,18 @@ Matrix* makeDataStructure( unsigned int n, unsigned int *tempint, char c )
   sparseMx->quantity = n;
   sparseMx->val = calloc( sparseMx->quantity, sizeof( int ) );//+1 remember about '\0'
   checkMem( sparseMx->val );
-  if ( c == 'r' ) //row compressed form
+  if ( c == 'r' || c == 'T' ) //row compressed form
   {
     sparseMx->row_ptr = calloc( sparseMx->rows + 1, sizeof( unsigned int ) );
     sparseMx->col_ind = calloc( sparseMx->quantity, sizeof( unsigned int ) );
   } else if( c == 'c' ) { //column compressed form
     sparseMx->row_ptr = calloc( sparseMx->quantity, sizeof( unsigned int ) );
     sparseMx->col_ind = calloc( sparseMx->columns + 1, sizeof( unsigned int ) );
-  } else if( c == 'T' ) {
-    sparseMx->row_ptr = calloc( sparseMx->columns + 1, sizeof( unsigned int ) );
-    sparseMx->col_ind = calloc( sparseMx->quantity, sizeof( unsigned int ) );
   }
+  // } else if( c == 'T' ) {
+  //   sparseMx->row_ptr = calloc( sparseMx->columns + 1, sizeof( unsigned int ) );
+  //   sparseMx->col_ind = calloc( sparseMx->quantity, sizeof( unsigned int ) );
+  // }
 
   checkMem( sparseMx->row_ptr );
   checkMem( sparseMx->col_ind );
@@ -167,6 +168,7 @@ void writeMatrixInFile( Matrix *matrix, char *fileName )
       for ( unsigned int j = a; j < b; j++ )
       {
 
+        //printf("Last is: %d\n", matrix->row_ptr[matrix->rows]);
         //printf("Counter: %d | a: %d | b: %d\n", i, a, b);
 
         fprintf( file, "%d,%d,%d\n", i, matrix->col_ind[j], matrix->val[j] );
@@ -331,7 +333,10 @@ Matrix* transposeMatrix( Matrix *matrix )
     //Make a copy of cumulative sum in workspace
     workspace[i] = transpose->row_ptr[i];
   }
+
   transpose->row_ptr[matrix->columns] = v;
+
+  printf("V is: %d | %d\n",v, transpose->row_ptr[transpose->rows]);
 
   //for (int i = 0; i <= matrix->columns; i++) printf("%d | %d\n", workspace[i], transpose->row_ptr[i]);
 
@@ -339,14 +344,28 @@ Matrix* transposeMatrix( Matrix *matrix )
   unsigned int w = 0;
   for ( unsigned int i = 0; i < matrix->rows; i++ )
   {
+    printf("V is: %d | %d | %d\n",v, transpose->row_ptr[transpose->rows], transpose->rows);
     for ( unsigned int j = matrix->row_ptr[i]; j < matrix->row_ptr[i + 1]; j++ )
     {
       //Place matrix(i,j) into transpose(j,i)
-      //w = workspace[matrix->col_ind[j]]++;
+
       transpose->col_ind[w = workspace[matrix->col_ind[j]]++] = i;
       transpose->val[w] = matrix->val[j];
+            
+
+
+
+      if ( i == 95 )
+      {
+        printf("%d, %d\n", matrix->row_ptr[i], matrix->row_ptr[i + 1]);
+        printf("%d\n", w);
+        printf("Quantity: %d\n", transpose->quantity);
+      }
+
     }
   }
+  printf("V is: %d | %d\n",v, transpose->row_ptr[transpose->rows]);
+  printf("V -1 is: %d | %d\n",v, transpose->row_ptr[transpose->rows - 2]);
 
   free( workspace );
   return transpose;
@@ -490,6 +509,23 @@ void reallocMatrix( Matrix *A, Matrix *B, char c )
 
 }
 
+void loadMatrix( Matrix *destination, Matrix *source )
+{
+  memcpy( destination->val, source->val, source->quantity * sizeof( int ) );
+  memcpy( destination->row_ptr, source->row_ptr,
+    ( source->rows + 1 ) * sizeof( unsigned int ) );
+  memcpy( destination->col_ind, source->col_ind,
+    source->quantity * sizeof( unsigned int ) );
+}
+
+Matrix *duplicate( Matrix *m )
+{
+  unsigned int tempint[2] = {m->rows, m->columns};
+  Matrix *duplicate = makeDataStructure( m->quantity, tempint, 'r' );
+  loadMatrix( duplicate, m );
+  return duplicate;
+}
+
 //sort including a excluding b
 void backwardinsertSort( Matrix *mx, unsigned int a, unsigned int b )
 {
@@ -546,6 +582,7 @@ Matrix *multiply( Matrix *A, Matrix *B )
     //check for memory realocation
     if ( z + product->columns > product->quantity )
     {
+      printf("Realloc!\n");
       reallocMatrix( product, product, '>' );
     }
 
@@ -847,9 +884,9 @@ Matrix* newMatrixFromString( char *str )
 
 
 
-/*
+
 //A is already full size with
-Matrix *chainMultiply( Matrix *A, Matrix *B )
+void chainMultiply( Matrix *A, Matrix *B, Matrix *product, unsigned int *count )
 {
   unsigned int y = 0;
 
@@ -859,7 +896,7 @@ Matrix *chainMultiply( Matrix *A, Matrix *B )
 
   unsigned int z = 0;
 
-  unsigned int *workspaceA = calloc( A->columns, sizeof( unsigned int ) );
+  unsigned int *workspaceA = calloc( B->columns, sizeof( unsigned int ) );
   int *workspaceB = calloc( B->columns, sizeof( int ) );
   checkMem( workspaceA );
   checkMem( workspaceB );
@@ -870,6 +907,7 @@ Matrix *chainMultiply( Matrix *A, Matrix *B )
     //check for memory realocation
     if ( z + product->columns > product->quantity )
     {
+      printf("Realloc!\n");
       reallocMatrix( product, product, '>' );
     }
 
@@ -923,19 +961,11 @@ Matrix *chainMultiply( Matrix *A, Matrix *B )
   }
 
   product->row_ptr[A->rows] = y;
-  //for (int x = 0; x <= A->rows; ++x) printf("Rowptr: %d\n", product->row_ptr[x]);
-
-  Matrix *shrinkedProduct = makeDataStructure( y, temp, 'r');
-  reallocMatrix( product, shrinkedProduct, '<' );
+  *count = y;
 
   free( workspaceA );
   free( workspaceB );
-  freeMatrixMemory( product );
-
-  //for (int x = 0; x <= A->rows; ++x) printf("Rowptr: %d\n", shrinkedProduct->row_ptr[x]);
-
-  return shrinkedProduct;
-}*/
+}
 
 
 
