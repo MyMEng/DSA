@@ -2,8 +2,8 @@
 #include "util.h"
 #include <stdio.h>
 #include "util.h"
-// A set of simple file loading helper functions
 
+// A set of simple file loading helper functions
 Matrix *load_file( char *filename )
 {
   char inputData[65536];
@@ -12,7 +12,7 @@ Matrix *load_file( char *filename )
   FILE* f;
   size_t rd;
   f = fopen( filename, "r" );
-    int dims[] = {0, 0, 0, 0, 0};   //khgjhgjhgjhg????
+    int dims[] = {0, 0, 0, 0, 0};
     unsigned int rows, cols, quantity;
     rows = cols = quantity = 0;
     int header = 1;
@@ -23,19 +23,19 @@ Matrix *load_file( char *filename )
     int* val_array = NULL;
     int offset = 0;
 
-    if (f != NULL)
+    if( f != NULL )
     {
       row_array = calloc( capacity, sizeof( unsigned int ) );
       col_array = calloc( capacity, sizeof( unsigned int ) );
       val_array = calloc( capacity, sizeof( int ) );
-      for ( ; ; )
+      for( ; ; )
       {
         rd = fread( ( void * ) &inputData[offset], sizeof( char ),
           ( sizeof( inputData ) / sizeof( char ) ) - ( 1 + offset ), f );
 
-        if ( rd == 0 )
+        if( rd == 0 )
         {
-          if ( !feof( f ) )
+          if( !feof( f ) )
           {
             fprintf( stderr, "Error on file read" );
           }
@@ -48,9 +48,9 @@ Matrix *load_file( char *filename )
             // Cleaning the offset
 
         int working = 1;
-        while ( working )
+        while( working )
         {
-          if ( strchr( head, '\n' ) == NULL )
+          if( strchr( head, '\n' ) == NULL )
           {
             working = 0;
             continue;
@@ -58,14 +58,14 @@ Matrix *load_file( char *filename )
                 // Copy the string to the beggining of the buffer
           parseEntry( &head, dims );
                 //printf("Parsing %d %d %d\n", dims[0], dims[1], dims[2]);
-          if ( header )
+          if( header )
           {
             header = 0;
             rows = dims[0];
             cols = dims[1];
           } else {
                     // Resizing the array
-            if ( quantity == capacity )
+            if( quantity == capacity )
             {
                         // Double the arrays
               unsigned int *old_rows = row_array;
@@ -98,22 +98,17 @@ Matrix *load_file( char *filename )
         }
 
             // Ensuring the proper offset
-        if (head) {
+        if( head ) {
           offset = ( int )strlen( head );
             // Copying the offset to the beggining
           memcpy( inputData, head, sizeof( char ) * offset );
-        }
-        else
-        {
+        } else {
           offset = 0;
           working = 0;
         }
       }
 
       fclose( f );
-
-        // Sorting arrays
-
 
         // The parsing was finished, create the matrix
       m = newMatrixFromArrays( row_array, col_array, val_array, rows, cols, quantity );
@@ -130,7 +125,7 @@ Matrix *load_file( char *filename )
   }
 
 
-  Matrix* newMatrixFromArrays(unsigned int* rows,unsigned int* cols, int* vals,
+  Matrix* newMatrixFromArrays( unsigned int* rows,unsigned int* cols, int* vals,
     unsigned int rows_size, unsigned int cols_size,unsigned int quantity )
   {
     Matrix* m = newMatrix(  );
@@ -149,7 +144,7 @@ Matrix *load_file( char *filename )
     memcpy( m->val, vals, quantity * sizeof( int ) );
 
     // The arrays are sorted row wise
-#define  MAX_LEVELS  64
+    #define  MAX_LEVELS  64
 
     int  piv, piv_v, piv_c, beg[MAX_LEVELS], end[MAX_LEVELS], L, R, swap ;
     int i = 0;

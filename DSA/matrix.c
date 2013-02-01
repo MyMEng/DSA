@@ -9,8 +9,11 @@ Perform stage 1:
 
 void stage1( char* X_name, unsigned int r, unsigned int c )
 {
+  //Load matrix from file into structure
   Matrix* matrixInstance = load_file(X_name);
+  //Print specified element, row and column
   print(matrixInstance, r, c);
+  //Clean
   freeMatrixMemory( matrixInstance );
 }
 
@@ -24,28 +27,8 @@ Perform stage 2:
 
 void stage2( char* R_name, char* X_name )
 {
-  char tempstr[BUFFSIZE];
-  unsigned int tempint[2];
-  time_t t1, t2;
-  t1 = clock(  );
-
-  //number of non-0 elements in matrix
-  unsigned int n = 0;
-
-  //Read the file; "r"-read only
-  FILE *file = fopen( X_name, "r" );
-  if ( checkFile( file ) )
-  {
-    initializeReading( file, &n, tempint, tempstr );
-  }
-
-  //Allocate space for matrix | 'r' = row compressed form
-  Matrix *matrixInstance = makeDataStructure(n, tempint, 'r');
-
-  //Read data into a structure and sort them
-  organiseData(matrixInstance, file, 'T');
-
-  fclose( file );
+  //Read matrix
+  Matrix *matrixInstance = load_file(X_name);
 
   //Transpose read matrix
   Matrix *transpose = transposeMatrix( matrixInstance );
@@ -53,26 +36,11 @@ void stage2( char* R_name, char* X_name )
   //Free the memory after data structure
   freeMatrixMemory( matrixInstance );
 
-
-  //print(transpose, 0, 0);
-
-
   //write transpose to a file
   writeMatrixInFile( transpose, R_name );
 
   //Free the memory after data structure
   freeMatrixMemory( transpose );
-
-  t2 = clock(  );
-
-  printf("number of non-empty lines: %i\nTime elapsed %.5fs\n",
-    n, ( difftime( t2, t1 ) / CLOCKS_PER_SEC ) );
-
-//MOZNA WCZYTAC DO STORADZA PIERDOLAC REWINDOWANIE FEJLA - RAZ A POZADNIE
-//jak czytam linie z pliku to nie bawic sie w lapanie stringa tylko po prostu "\n"
-
-
-
 }
 
 /*
@@ -85,41 +53,9 @@ Perform stage 3:
 
 void stage3( char* R_name, char* X_name, char* Y_name )
 {
-
-  // char tempstrX[BUFFSIZE];
-  // unsigned int tempintX[2];
-  // char tempstrY[BUFFSIZE];
-  // unsigned int tempintY[2];
-  // time_t t1, t2;
-  // t1 = clock(  );
-
-  // //number of non-0 elements in matrix
-  // unsigned int nX = 0;
-  // unsigned int nY = 0;
-
-  // //Read the file; "r"-read only
-  // FILE *fileX = fopen( X_name, "r" );
-  // FILE *fileY = fopen( Y_name, "r" );
-  // if ( checkFile( fileX ) && checkFile( fileY ) )
-  // {
-  //   initializeReading( fileX, &nX, tempintX, tempstrX );
-  //   initializeReading( fileY, &nY, tempintY, tempstrY );
-  // }
-
-  // //Allocate space for matrix | 'r' = row compressed form
-  // Matrix *mxA = makeDataStructure( nX, tempintX, 'r' );
-  // Matrix *mxB = makeDataStructure( nY, tempintY, 'r' );
-
-  // //Read data into a structure and do not sort them
-  // organiseData( mxA, fileX, 'T'/*'N'*/ );
-  // organiseData( mxB, fileY, 'T'/*'N'*/ );
-
-  // fclose( fileX );
-  // fclose( fileY );
-
-   Matrix* mxB = load_file(Y_name);
-   Matrix* mxA = load_file(X_name);
-
+  //Read matrices from files for addition
+  Matrix* mxB = load_file(Y_name);
+  Matrix* mxA = load_file(X_name);
 
   //If dimmensions of matrices are correct sum them
   Matrix *sum = NULL;
@@ -131,23 +67,13 @@ void stage3( char* R_name, char* X_name, char* Y_name )
       exit ( EXIT_FAILURE );
   }
 
-  //writeMatrixInFile( mxA, "A.txt" );
-  //writeMatrixInFile( mxB, "B.txt" );
-
-
-  //write transpose to a file
+  //write sum to a file
   writeMatrixInFile( sum, R_name );
 
   //Free the memory after data structure
   freeMatrixMemory( sum );
   freeMatrixMemory( mxA );
   freeMatrixMemory( mxB );
-
-  // t2 = clock(  );
-
-  // printf("number of non-empty lines: X=%d | Y=%d\nTime elapsed %.5fs\n",
-  //   nX, nY, ( difftime( t2, t1 ) / CLOCKS_PER_SEC ) );
-
 }
 
 /*
@@ -160,51 +86,11 @@ Perform stage 4:
 
 void stage4( char* R_name, char* X_name, char* Y_name )
 {
+  //Read matrices from files for multiplication
+  Matrix* mxB = load_file(Y_name);
+  Matrix* mxA = load_file(X_name);
 
-  // char tempstrX[BUFFSIZE];
-  // unsigned int tempintX[2];
-  // char tempstrY[BUFFSIZE];
-  // unsigned int tempintY[2];
-  time_t t1, t2;
-  t1 = clock(  );
-
-  // //number of non-0 elements in matrix
-  // unsigned int nX = 0;
-  // unsigned int nY = 0;
-
-  // //Read the file; "r"-read only
-  // FILE *fileX = fopen( X_name, "r" );
-  // FILE *fileY = fopen( Y_name, "r" );
-  // if ( checkFile( fileX ) && checkFile( fileY ) )
-  // {
-  //   initializeReading( fileX, &nX, tempintX, tempstrX );
-  //   initializeReading( fileY, &nY, tempintY, tempstrY );
-  // }
-
-  // //Allocate space for matrix | 'r' = row compressed form
-  // Matrix *mxA = makeDataStructure( nX, tempintX, 'r' );
-  // Matrix *mxB = makeDataStructure( nY, tempintY, 'r' );
-
-  // //Read data into a structure and do not sort them
-  // organiseData( mxA, fileX, 'T'/*'N'*/ );
-  // organiseData( mxB, fileY, 'T'/*'N'*/ );
-
-  // fclose( fileX );
-  // fclose( fileY );
-
-
-  //printf("Finihed reading\n");
-  //t1 = clock(  );
-
-  //If dimmensions of matrices are correct sum them
-
-
-  //od kuby
-   Matrix* mxB = load_file(Y_name);
-   Matrix* mxA = load_file(X_name);
-
-
-
+  //Check whether dimmensions are good and multiply
   Matrix *product = NULL;
   if( productDim( mxA, mxB ) )
   {
@@ -214,22 +100,13 @@ void stage4( char* R_name, char* X_name, char* Y_name )
       exit ( EXIT_FAILURE );
   }
 
-  //write transpose to a file
+  //write product to a file
   writeMatrixInFile( product, R_name );
 
   //Free the memory after data structure
   freeMatrixMemory( product );
   freeMatrixMemory( mxA );
   freeMatrixMemory( mxB );
-
-  t2 = clock(  );
-
-   printf("Time elapsed %.5fs\n",
-    ( difftime( t2, t1 ) / CLOCKS_PER_SEC ) );
-
-  // printf("number of non-empty lines: X=%d | Y=%d\nTime elapsed %.5fs\n",
-  //   nX, nY, ( difftime( t2, t1 ) / CLOCKS_PER_SEC ) );
-
 }
 
 /*
@@ -242,8 +119,8 @@ Perform stage 5:
 
 void stage5( char* R_name, char* X_name[], int l )
 {
-
-  if ( l < 2 )
+  //Check whether there's enough arguments
+  if( l < 2 )
   {
     fprintf ( stderr, "Wrong number of arguments.\n" );
     exit ( EXIT_FAILURE );
@@ -253,8 +130,6 @@ void stage5( char* R_name, char* X_name[], int l )
   unsigned int tempintX[2];
   char tempstrY[BUFFSIZE];
   unsigned int tempintY[2];
-  time_t t1, t2;
-  t1 = clock(  );
 
   //number of non-0 elements in matrix
   unsigned int nX = 0;
@@ -269,13 +144,12 @@ void stage5( char* R_name, char* X_name[], int l )
 
   //Check from the very begining whether it makes sens to start multiplying
   //Calculate final dimmension and create such matrix
-  for (int i = 1; i < l; i++)
+  for(int i = 1; i < l; i++)
   {
-
     //Read the file; "r"-read only
     FILE *fileX = fopen( X_name[i - 1], "r" );
     FILE *fileY = fopen( X_name[i], "r" );
-    if ( checkFile( fileX ) && checkFile( fileY ) )
+    if( checkFile( fileX ) && checkFile( fileY ) )
     {
       initializeReading( fileX, &nX, tempintX, tempstrX );
       initializeReading( fileY, &nY, tempintY, tempstrY );
@@ -287,7 +161,7 @@ void stage5( char* R_name, char* X_name[], int l )
       exit ( EXIT_FAILURE );
     }
 
-    if (  i == 1 )
+    if(  i == 1 )
     {
       totalElem = nX + nY;
       totalRow = tempintX[0];
@@ -370,35 +244,19 @@ void stage5( char* R_name, char* X_name[], int l )
 
   //   freeMatrixMemory( mxA );
   //   freeMatrixMemory( mxB );
-
-
-
-
-  t2 = clock(  );
-
-
-  printf("%dTime elapsed %.5fs\n",totalElem, ( difftime( t2, t1 ) / CLOCKS_PER_SEC ) );
-  // printf("number of non-empty lines: X=%d | Y=%d\nTime elapsed %.5fs\n",
-  //   nX, nY, ( difftime( t2, t1 ) / CLOCKS_PER_SEC ) );
-
 }
 
 void sort( char* R_name, char* X_name )
 {
-     Matrix* mx = load_file(X_name);
+  Matrix* mx = load_file(X_name);
 
-    //double transpose is like sort
-  //Transpose read matrix
-    Matrix *transpose = transposeMatrix( mx );
-    Matrix *srt = transposeMatrix( transpose );
+  //double transpose acts like sort
+  Matrix *transpose = transposeMatrix( mx );
+  Matrix *srt = transposeMatrix( transpose );
 
   //Free the memory after data structure
   freeMatrixMemory( mx );
   freeMatrixMemory( transpose );
-
-
-  //print(transpose, 0, 0);
-
 
   //write transpose to a file
   writeMatrixInFile( srt, R_name );

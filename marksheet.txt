@@ -16,7 +16,7 @@ course : [Mathematics & Computer Science]
 So that we can improve the assignment in the future, let us know roughly how
 long you spent on it (i.e., how much effort you put into it):
 
-effort : [About 3 weeks with average 4 hours a day.]
+effort : [About 4 weeks with average 5 hours a day.]
 
 -------------------------------------------------------------------------------
 
@@ -77,6 +77,11 @@ Any other documentation, notes or comments that you think are important
   multiple entries  V
   testy
   */
+ 
+  // Sorting the arrays - quickSort
+  //  This public-domain C implementation by Darel Rex Finley.
+
+
 	]
 
 

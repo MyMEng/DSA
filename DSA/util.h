@@ -27,14 +27,39 @@ typedef struct MatrixTag {
   unsigned int *row_ptr;
 } Matrix;
 
-//Count number of lines in a non-empty file
-unsigned int numberOfLines( FILE *file );
-
 //Free the memory after matrix structure
 void freeMatrixMemory( Matrix *mx );
 
-//Check whether memory was alloccated prroperly
-void checkMem( void *check );
+//Write the matrix to the file
+void writeMatrixInFile( Matrix *matrix, char *fileName );
+
+//Check whether dimmensions for addition are correct
+bool sumDim( Matrix *A, Matrix *B );
+
+//Add matrices A and B
+Matrix *add( Matrix *A, Matrix *B );
+
+//Acces the matrix data - print it to stdout
+//Element - elements of row - elements of column
+void print( Matrix *matrix, unsigned int r, unsigned int c );
+
+//Transpose matrix may also serve as transformer from compresed row form to
+//compresed column form. To calculate transpose we convert it to Compressed
+//Column form and reed it as compressed row form
+Matrix *transposeMatrix( Matrix *matrix );
+
+//Check dimmensions for multiplication
+bool productDim( Matrix *mxA, Matrix *mxB );
+
+//Multiply matrices
+Matrix *multiply( Matrix *mxA, Matrix *mxB );
+
+//Sort in decreasing order
+void backwardinsertSort( Matrix *mx, unsigned int a, unsigned int b );
+
+
+
+
 
 //Get ints from string of chars
 void fillWithNo( unsigned int *tmpint, int *val, char *tmpstr );
@@ -45,13 +70,6 @@ Matrix *makeDataStructure( unsigned int n, unsigned int *tempint, char c );
 //Put data from file into data structure in organised maner
 void organiseData( Matrix *matrix, FILE *file, char c );
 
-//Write the matrix to the file
-void writeMatrixInFile( Matrix *matrix, char *fileName );
-
-//Acces the matrix data - print it to stdout
-//Element - elements of row - elements of column
-void print( Matrix *matrix, unsigned int r, unsigned int c );
-
 //Sort elements between indeces a and b
 void insertSort( Matrix *mx, unsigned int a, unsigned int b );
 
@@ -61,24 +79,6 @@ bool checkFile( FILE *file );
 //Prepare file to be read
 void initializeReading( FILE *file, unsigned int *num, unsigned int *tempint,
 	char *tempstr );
-
-//Transpose matrix or may also serve as transformer from compresed row form to
-//compresed column form
-//To calculate transpose we convert it to Compressed Column form and reed it as
-//compressed row form
-Matrix *transposeMatrix( Matrix *matrix );
-
-//Check whether dimmensions for addition are correct
-bool sumDim( Matrix *A, Matrix *B );
-
-//Add matrices A and B
-Matrix *add( Matrix *A, Matrix *B );
-
-void backwardinsertSort( Matrix *mx, unsigned int a, unsigned int b );
-
-bool productDim( Matrix *mxA, Matrix *mxB );
-
-Matrix *multiply( Matrix *mxA, Matrix *mxB );
 
 //search for element in matrix
 bool checkOnMx( Matrix *matrix, unsigned int row, unsigned int column );
@@ -94,8 +94,13 @@ void loadMatrix( Matrix *destination, Matrix *source );
 Matrix *duplicate( Matrix *m );
 
 int parseEntry( char **string, int *dims );
+
 int countLines( char *string );
+
 int compareMatrices( Matrix *a, Matrix *b );
+
 Matrix *newMatrixFromString( char* str );
+
 Matrix *newMatrix(  );
+
 #endif

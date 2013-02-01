@@ -12,8 +12,6 @@ unsigned int numberOfLines(FILE *file)
 
   while ( fscanf( file, "%s\n", temp ) != EOF ) counter++;
 
-  //printf("Lines: %d\n", counter);
-
   return counter;
 }
 
@@ -39,14 +37,13 @@ void fillWithNo( unsigned int *tmpint, int *val, char *tmpstr )
   int id = 0;
 
   id = sscanf( tmpstr, "%d,%d,%d/n", &tmpint[0], &tmpint[1], val);
-  //Accept ony if 2 or 3 elements have been read(valid file formatting)
+  //Accept ony if 3 elements have been read(valid file formatting)
   if( id != 3  )
   {
     fprintf( stderr, "Bad file formatting.\n" );
     exit( EXIT_FAILURE );
   }
 }
-
 
 void initializeReading(FILE *file, unsigned int *num, unsigned int *tempint,
   char *tempstr)
@@ -80,7 +77,7 @@ Matrix* makeDataStructure( unsigned int n, unsigned int *tempint, char c )
   sparseMx->rows = tempint[0];
   sparseMx->columns = tempint[1];
   sparseMx->quantity = n;
-  sparseMx->val = calloc( sparseMx->quantity, sizeof( int ) );//+1 remember about '\0'
+  sparseMx->val = calloc( sparseMx->quantity, sizeof( int ) );
   checkMem( sparseMx->val );
   if ( c == 'r' || c == 'T' ) //row compressed form
   {
@@ -90,10 +87,6 @@ Matrix* makeDataStructure( unsigned int n, unsigned int *tempint, char c )
     sparseMx->row_ptr = calloc( sparseMx->quantity, sizeof( unsigned int ) );
     sparseMx->col_ind = calloc( sparseMx->columns + 1, sizeof( unsigned int ) );
   }
-  // } else if( c == 'T' ) {
-  //   sparseMx->row_ptr = calloc( sparseMx->columns + 1, sizeof( unsigned int ) );
-  //   sparseMx->col_ind = calloc( sparseMx->quantity, sizeof( unsigned int ) );
-  // }
 
   checkMem( sparseMx->row_ptr );
   checkMem( sparseMx->col_ind );
@@ -121,19 +114,16 @@ void organiseData( Matrix *matrix, FILE *file, char c )
     while( fscanf( file, "%s\n", tempchar ) != EOF )
     {
       fillWithNo( tempint, &val, tempchar );
-      //printf("%d | %d | %d\n", tempint[0], tempint[1], tempint[2]);
 
       if( tempint[0] == i )
       {
        matrix->col_ind[cn] = tempint[1];
        matrix->val[cn] = val;
-       //printf("%d | %d\n", matrix->col_ind[cn], matrix->val[cn]);
        cn++;
       }
     }
 
-    //Sort each row according to column number
-    //You don't have to sort when you do a trnspose
+    //Sort each row according to column number if needed
     if( c != 'T' )
     {
       insertSort( matrix, on, cn );
@@ -160,20 +150,13 @@ void writeMatrixInFile( Matrix *matrix, char *fileName )
     unsigned int b = 0;
     unsigned int a = 0;
 
-    //Overflow?
     for ( unsigned int i = 0; i < matrix->rows; i++ )
     {
       b = matrix->row_ptr[i + 1];
       a = matrix->row_ptr[i];
       for ( unsigned int j = a; j < b; j++ )
       {
-
-        //printf("Last is: %d\n", matrix->row_ptr[matrix->rows]);
-        //printf("Counter: %d | a: %d | b: %d\n", i, a, b);
-
         fprintf( file, "%d,%d,%d\n", i, matrix->col_ind[j], matrix->val[j] );
-        //printf("%d\n", j);
-        //printf("%d | %d | %d\n", i, matrix->col_ind[j], matrix->val[j]);
       }
     }
 
@@ -236,16 +219,14 @@ void print( Matrix *matrix, unsigned int r, unsigned int c )
     unsigned int y;
     int tempcol;
 
-    //Overflow?
-
     tempcol = 0;
     for ( unsigned int j = matrix->row_ptr[0]; j < matrix->row_ptr[1]; j++ )
     {
-          if( c == matrix->col_ind[j] )
-          {
-            tempcol = matrix->val[j];
-            continue;
-          }
+      if( c == matrix->col_ind[j] )
+      {
+        tempcol = matrix->val[j];
+        continue;
+      }
     }
     printf( "%d", tempcol );
 
@@ -256,11 +237,11 @@ void print( Matrix *matrix, unsigned int r, unsigned int c )
       tempcol = 0;
       for ( unsigned int j = x; j < y; j++ )
       {
-            if( c == matrix->col_ind[j] )
-            {
-              tempcol = matrix->val[j];
-              continue;
-            }
+        if( c == matrix->col_ind[j] )
+        {
+          tempcol = matrix->val[j];
+          continue;
+        }
       }
       printf( ",%d", tempcol );
     }
@@ -269,13 +250,13 @@ void print( Matrix *matrix, unsigned int r, unsigned int c )
 
 }
 
-//sort including a excluding b
+//sort including a; excluding b
 void insertSort( Matrix *mx, unsigned int a, unsigned int b )
 {
   unsigned int colToIns;
   int valToIns;
   unsigned int valPos;
-  //printf("a is: %d | b is : %d\n",a, b );
+
   for ( int i = ( a + 1 ); i < b; i++ )
   {
     valPos = i;
@@ -311,17 +292,11 @@ Matrix* transposeMatrix( Matrix *matrix )
   checkMem( workspace );
 
 
-  //calculate collumn counts - compress columns | cumulative sum
-  //
-  //quantity of each element
+  //calculate collumn counts - compress columns - quantity of each element
   for ( unsigned int i = 0; i < matrix->quantity; i++ )
   {
     ( workspace[matrix->col_ind[i]] )++;
   }
-
-  //for (int i = 0; i <= matrix->columns; i++) printf("# of elements %d\n", workspace[i]);
-  //for (int i = 0; i < matrix->quantity; i++) printf("# of elements %d | val:%d\n", matrix->col_ind[i],matrix->val[i]);
-  //printf("%d\n", matrix->quantity);
 
   //cumulative sum
   unsigned int v = 0;
@@ -336,42 +311,20 @@ Matrix* transposeMatrix( Matrix *matrix )
 
   transpose->row_ptr[matrix->columns] = v;
 
-  printf("V is: %d | %d\n",v, transpose->row_ptr[transpose->rows]);
-
-  //for (int i = 0; i <= matrix->columns; i++) printf("%d | %d\n", workspace[i], transpose->row_ptr[i]);
-
   //fill transpose with values and row indeces
   unsigned int w = 0;
   for ( unsigned int i = 0; i < matrix->rows; i++ )
   {
-    printf("V is: %d | %d | %d\n",v, transpose->row_ptr[transpose->rows], transpose->rows);
     for ( unsigned int j = matrix->row_ptr[i]; j < matrix->row_ptr[i + 1]; j++ )
     {
       //Place matrix(i,j) into transpose(j,i)
-
       transpose->col_ind[w = workspace[matrix->col_ind[j]]++] = i;
       transpose->val[w] = matrix->val[j];
-            
-
-
-
-      if ( i == 95 )
-      {
-        printf("%d, %d\n", matrix->row_ptr[i], matrix->row_ptr[i + 1]);
-        printf("%d\n", w);
-        printf("Quantity: %d\n", transpose->quantity);
-      }
-
     }
   }
-  printf("V is: %d | %d\n",v, transpose->row_ptr[transpose->rows]);
-  printf("V -1 is: %d | %d\n",v, transpose->row_ptr[transpose->rows - 2]);
-
   free( workspace );
   return transpose;
 }
-
-
 
 bool sumDim( Matrix *A, Matrix *B )
 {
@@ -426,7 +379,6 @@ Matrix *add( Matrix *A, Matrix *B )
       }
     }
 
-
     for ( unsigned int j = sum->row_ptr[i]; j < y; j++ )
     {
       //when sum up to 0
@@ -440,18 +392,7 @@ Matrix *add( Matrix *A, Matrix *B )
 
     if ( zeroSum )
     {
-      // for (int g = sum->row_ptr[i]; g < y; ++g)
-      // {
-      //   printf("O LOL:%d | %d | %d | #0 = %d\n", i, sum->col_ind[g], sum->val[g], zeroQuantity);
-      // }
-
-
       backwardinsertSort( sum, sum->row_ptr[i], y );
-
-      // for (int g = sum->row_ptr[i]; g < y; ++g)
-      // {
-      //   printf("O LOL:%d | %d | %d | #0 = %d\n", i, sum->col_ind[g], sum->val[g], zeroQuantity);
-      // }
       y -= zeroQuantity;
 
       zeroQuantity = 0;
@@ -461,12 +402,9 @@ Matrix *add( Matrix *A, Matrix *B )
   }
   sum->row_ptr[A->rows] = y;
 
-  //printf("tyle elementow ostatecznie: %d\n", sum->row_ptr[A->rows]);
   //remove extra space in sum matrix
   Matrix *shrinkedSum = makeDataStructure( y, temp, 'r');
   reallocMatrix( sum, shrinkedSum, '<' );
-  //val[]//col-int[]
-
 
   free( workspaceA );
   free( workspaceB );
@@ -500,13 +438,9 @@ void reallocMatrix( Matrix *A, Matrix *B, char c )
     B->col_ind = newCol;
     B->quantity = 2 * B->quantity;
 
-    //printf("Realoc completed\n");
-
     free( currentValues );
     free( currentCol );
-
   }
-
 }
 
 void loadMatrix( Matrix *destination, Matrix *source )
@@ -526,14 +460,13 @@ Matrix *duplicate( Matrix *m )
   return duplicate;
 }
 
-//sort including a excluding b
 void backwardinsertSort( Matrix *mx, unsigned int a, unsigned int b )
 {
   unsigned int colToIns;
   int valToIns;
   unsigned int valPos;
-  //printf("a is: %d | b is : %d\n",a, b );
-  for ( int i = ( a + 1 ); i < b; i++ )
+
+  for( int i = ( a + 1 ); i < b; i++ )
   {
     valPos = i;
     colToIns = mx->col_ind[valPos];
@@ -582,7 +515,6 @@ Matrix *multiply( Matrix *A, Matrix *B )
     //check for memory realocation
     if ( z + product->columns > product->quantity )
     {
-      printf("Realloc!\n");
       reallocMatrix( product, product, '>' );
     }
 
@@ -622,7 +554,6 @@ Matrix *multiply( Matrix *A, Matrix *B )
 
     if ( zeroProd )
     {
-
       backwardinsertSort( product, product->row_ptr[i], y );
 
       y -= zeroQuantity;
@@ -630,13 +561,9 @@ Matrix *multiply( Matrix *A, Matrix *B )
       zeroQuantity = 0;
       zeroProd = false;
     }
-
-    //printf("Y is: %d\n", y);
-
   }
 
   product->row_ptr[A->rows] = y;
-  //for (int x = 0; x <= A->rows; ++x) printf("Rowptr: %d\n", product->row_ptr[x]);
 
   Matrix *shrinkedProduct = makeDataStructure( y, temp, 'r');
   reallocMatrix( product, shrinkedProduct, '<' );
@@ -645,15 +572,10 @@ Matrix *multiply( Matrix *A, Matrix *B )
   free( workspaceB );
   freeMatrixMemory( product );
 
-  //for (int x = 0; x <= A->rows; ++x) printf("Rowptr: %d\n", shrinkedProduct->row_ptr[x]);
-
   return shrinkedProduct;
 }
 
-// Adding additional features
-/**
- * Create an empty matrix
- */
+//Create an empty matrix
 Matrix *newMatrix(  )
 {
     Matrix *new = malloc( sizeof( Matrix ) );
@@ -667,9 +589,7 @@ Matrix *newMatrix(  )
     return new;
 }
 
-/**
- * Create a matrix with given dimensions
- */
+//Create a matrix with given dimensions
 Matrix *newMatrixWithDim( int columns, int rows )
 {
     Matrix *new = newMatrix(  );
@@ -685,7 +605,7 @@ int parseEntry( char **string, int *dims )
     int id = 0;
     char *start = *string;
     char *header = NULL;
-    if ( **string == '\0' )
+    if( **string == '\0' )
     {
         return id;
     }
@@ -694,196 +614,180 @@ int parseEntry( char **string, int *dims )
 
     id = sscanf( header, "%d,%d,%d", &dims[0], &dims[1], &dims[2] );
 
-    // Need to return the error
-    //    if (*string == NULL)
-    //        *string = header;
-
     return id;
 }
 
-/**
- * Compaing two matrices, assuming they are sorted
- */
+//Compaing two matrices, assuming they are sorted
 int compareMatrices( Matrix* a, Matrix* b )
 {
-    if ( a->rows != b->rows ) return 0;
-    if ( a->columns != b->columns ) return 0;
-    if ( a->quantity != b->quantity ) return 0;
+    if( a->rows != b->rows ) return 0;
+    if( a->columns != b->columns ) return 0;
+    if( a->quantity != b->quantity ) return 0;
     int i;
-    for ( i = 0; i < a->quantity; i++ ) {
-        if ( a->col_ind[i] != b->col_ind[i] ) return 0;
-        if ( a->val[i] != b->val[i] ) return 0;
+    for( i = 0; i < a->quantity; i++ )
+    {
+        if( a->col_ind[i] != b->col_ind[i] ) return 0;
+        if( a->val[i] != b->val[i] ) return 0;
     }
-    for ( i = 0; i < a->rows + 1; i++ ) {
-        if ( a->row_ptr[i] != b->row_ptr[i] ) return 0;
+    for( i = 0; i < a->rows + 1; i++ ) {
+        if( a->row_ptr[i] != b->row_ptr[i] ) return 0;
     }
     return 1;
 }
 
 int countLines( char *string )
 {
-    int i = 0;
-    while ( string != NULL )
+  int i = 0;
+  while( string != NULL )
+  {
+    if( *string == '\0' )
     {
-        if ( *string == '\0' )
-        {
-            break;
-        }
-        if ( *string == '\n' )
-        {
-            string++;
-            continue;
-        } else {
-            i++;
-        }
-        string = strchr( string, '\n' );
+      break;
     }
-    return i;
+    if( *string == '\n' )
+    {
+      string++;
+      continue;
+    } else {
+      i++;
+    }
+    string = strchr( string, '\n' );
+  }
+  return i;
 }
 
-/**
- * Create a matrix from a string
- *
- * It is also possible to create the matrix for a triplet of arrays
- */
+//Create a matrix from a string
+//It is also possible to create the matrix for a triplet of arrays
 Matrix* newMatrixFromString( char *str )
 {
-    Matrix *m = newMatrix(  );
-    char *head = str;
-    int dims[] = {0, 0, 0, 0};
-    int result = parseEntry( &head, dims );
-    if ( result != 2 )
+  Matrix *m = newMatrix(  );
+  char *head = str;
+  int dims[] = {0, 0, 0, 0};
+  int result = parseEntry( &head, dims );
+  if( result != 2 )
+  {
+    free( m );
+    return NULL;
+  }
+  m->rows = dims[0];
+  m->columns = dims[1];
+  // Here we count the number of new lines to allocate the elements
+  m->quantity = countLines( head );
+
+  // Allocating the memory for the arrays
+  m->col_ind = calloc( m->quantity, sizeof( int ) );
+  m->row_ptr = calloc( m->rows + 1, sizeof( int ) );
+  m->val = calloc( m->quantity, sizeof( int ) );
+
+  // Temporary array for sorting
+  int *row_ind = calloc( m->quantity, sizeof( int ) );
+
+  // Ignore malformed entries for now
+  size_t j = 0;
+  while( head[0] != '\0' )
+  {
+    // Getting the numbers
+    result = parseEntry( &head, dims );
+    if( result != 3 )
     {
-        free( m );
-        return NULL;
-    }
-    m->rows = dims[0];
-    m->columns = dims[1];
-    // Here we count the number of new lines to allocate the elements
-    m->quantity = countLines( head );
-
-    // Allocating the memory for the arrays
-    m->col_ind = calloc( m->quantity, sizeof( int ) );
-    m->row_ptr = calloc( m->rows + 1, sizeof( int ) );
-    m->val = calloc( m->quantity, sizeof( int ) );
-
-    // Temporary array for sorting
-    int *row_ind = calloc( m->quantity, sizeof( int ) );
-
-    // Ignore malformed entries for now
-    size_t j = 0;
-    while ( head[0] != '\0' )
-    {
-        // Getting the numbers
-        result = parseEntry( &head, dims );
-        if ( result != 3 )
-        {
-            continue;
-        }
-
-        row_ind[j] = dims[0];
-        m->col_ind[j] = dims[1];
-        m->val[j] = dims[2];
-
-        j += 1;
+      continue;
     }
 
-    // Sorting the arrays
-    //  quickSort
-    //
-    //  This public-domain C implementation by Darel Rex Finley.
-    int *arr = row_ind;
-    int elements = m->quantity;
-#define  MAX_LEVELS  64
+    row_ind[j] = dims[0];
+    m->col_ind[j] = dims[1];
+    m->val[j] = dims[2];
 
-    int  piv, piv_v, piv_c, beg[MAX_LEVELS], end[MAX_LEVELS], L, R, swap;
-    int i = 0;
+    j += 1;
+  }
 
-    beg[0] = 0;
-    end[0] = elements;
-    while(i >= 0)
-    {
-        L = beg[i];
-        R = end[i] - 1;
+  // Sorting the arrays - quickSort
+  //  This public-domain C implementation by Darel Rex Finley.
+  int *arr = row_ind;
+  int elements = m->quantity;
+  #define  MAX_LEVELS  64
 
-        if( L < R )
-        {
-            piv = arr[L];
-            piv_v = m->val[L];
-            piv_c = m->col_ind[L];
+  int  piv, piv_v, piv_c, beg[MAX_LEVELS], end[MAX_LEVELS], L, R, swap;
+  int i = 0;
 
-            while( L < R )
-            {
-                while( arr[R] >= piv && L < R )
-                {
-                    R--;
-                }
-                if( L<R )
-                {
-                    // Moving additional data around
-                    m->val[L] = m->val[R];
-                    m->col_ind[L] = m->col_ind[R];
-                    arr[L++] = arr[R];
-                }
-                while( arr[L] <= piv && L < R )
-                    L++;
-                if( L<R )
-                {
-                    m->val[R] = m->val[L];
-                    m->col_ind[R] = m->col_ind[L];
-                    arr[R--] = arr[L];
-                }
-            }
+  beg[0] = 0;
+  end[0] = elements;
+  while(i >= 0)
+  {
+      L = beg[i];
+      R = end[i] - 1;
 
-            arr[L] = piv;
-            m->val[L] = piv_v;
-            m->col_ind[L] = piv_c;
+      if( L < R )
+      {
+          piv = arr[L];
+          piv_v = m->val[L];
+          piv_c = m->col_ind[L];
 
-            beg[i+1] = L+1;
-            end[i+1] = end[i];
-            end[i++] = L;
+          while( L < R )
+          {
+              while( arr[R] >= piv && L < R )
+              {
+                  R--;
+              }
+              if( L<R )
+              {
+                  // Moving additional data around
+                  m->val[L] = m->val[R];
+                  m->col_ind[L] = m->col_ind[R];
+                  arr[L++] = arr[R];
+              }
+              while( arr[L] <= piv && L < R )
+                  L++;
+              if( L<R )
+              {
+                  m->val[R] = m->val[L];
+                  m->col_ind[R] = m->col_ind[L];
+                  arr[R--] = arr[L];
+              }
+          }
 
-            if( end[i] - beg[i] > end[i-1] - beg[i-1] )
-            {
-                swap = beg[i];
-                beg[i] = beg[i-1];
-                beg[i-1] = swap;
-                swap = end[i];
-                end[i] = end[i-1];
-                end[i-1] = swap;
-            }
-        } else {
-            i--;
-        }
-    }
-    // The arrays are sorted row wise
-    // Compressing the rows
-    int cur_row = 0;
-    unsigned int* row_zero = &(m->row_ptr[1]);
-    for( i = 0; i < m->quantity; i++ )
-    {
-        while( cur_row < row_ind[i] )
-        {
-            row_zero[cur_row++] = i;
-        }
-    }
-    // Padding the rest
-    while ( cur_row < m->rows ) {
-        row_zero[cur_row++] = i;
-    }
+          arr[L] = piv;
+          m->val[L] = piv_v;
+          m->col_ind[L] = piv_c;
 
-    // Writing to the last one
+          beg[i+1] = L+1;
+          end[i+1] = end[i];
+          end[i++] = L;
 
-    // Freeing up the temporary array for sorting
-    free( row_ind );
-    return m;
+          if( end[i] - beg[i] > end[i-1] - beg[i-1] )
+          {
+              swap = beg[i];
+              beg[i] = beg[i-1];
+              beg[i-1] = swap;
+              swap = end[i];
+              end[i] = end[i-1];
+              end[i-1] = swap;
+          }
+      } else {
+          i--;
+      }
+  }
+  // The arrays are sorted row wise
+  // Compressing the rows
+  int cur_row = 0;
+  unsigned int* row_zero = &(m->row_ptr[1]);
+  for( i = 0; i < m->quantity; i++ )
+  {
+      while( cur_row < row_ind[i] )
+      {
+          row_zero[cur_row++] = i;
+      }
+  }
+  // Padding the rest
+  while ( cur_row < m->rows ) {
+      row_zero[cur_row++] = i;
+  }
+
+  // Writing to the last one
+
+  // Freeing up the temporary array for sorting
+  free( row_ind );
+  return m;
 }
-
-
-
-
-
-
 
 //A is already full size with
 void chainMultiply( Matrix *A, Matrix *B, Matrix *product, unsigned int *count )
@@ -907,7 +811,7 @@ void chainMultiply( Matrix *A, Matrix *B, Matrix *product, unsigned int *count )
     //check for memory realocation
     if ( z + product->columns > product->quantity )
     {
-      printf("Realloc!\n");
+      //printf("Realloc!\n");
       reallocMatrix( product, product, '>' );
     }
 
@@ -945,9 +849,8 @@ void chainMultiply( Matrix *A, Matrix *B, Matrix *product, unsigned int *count )
 
     }
 
-    if ( zeroProd )
+    if( zeroProd )
     {
-
       backwardinsertSort( product, product->row_ptr[i], y );
 
       y -= zeroQuantity;
@@ -955,9 +858,6 @@ void chainMultiply( Matrix *A, Matrix *B, Matrix *product, unsigned int *count )
       zeroQuantity = 0;
       zeroProd = false;
     }
-
-    //printf("Y is: %d\n", y);
-
   }
 
   product->row_ptr[A->rows] = y;
@@ -966,20 +866,6 @@ void chainMultiply( Matrix *A, Matrix *B, Matrix *product, unsigned int *count )
   free( workspaceA );
   free( workspaceB );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 bool checkOnMx( Matrix *matrix, unsigned int row, unsigned int column )
 {
@@ -993,52 +879,3 @@ bool checkOnMx( Matrix *matrix, unsigned int row, unsigned int column )
   }
   return false;
 }
-
-
-// //It;s not transpose it's convert
-// //
-// //na hama cisnij to w stara strukture i bedzie git ... hyba??
-// Matrix* transposeMatrix( Matrix *matrix )
-// {
-//   //allocate space
-//   int *workspace = calloc( 1, matrix->columns * sizeof( int ) );
-//   int temp[2] = {( matrix->columns ), ( matrix->rows )};
-//   Matrix *transpose = makeDataStructure( matrix->quantity, temp, 'c');
-
-//   //calculate collumn counts - compress columns | cumulative sum
-//   //
-//   //quantity of each element
-//   for ( int i = 0; i < matrix->quantity; i++ )
-//   {
-//     (workspace[matrix->col_ind[i]])++;
-//   }
-//   //cumulative sum
-//   int v = 0;
-//   for ( int i = 0; i < matrix->columns; i++ )
-//   {
-//     transpose->col_ind[i] = v;
-//     v += workspace[i];
-
-//     //Make a copy of cumulative sum in workspace
-//     workspace[i] = transpose->col_ind[i];
-//   }
-//   transpose->col_ind[matrix->columns] = v;
-
-//   //  for (int i = 0; i < matrix->columns; ++i) printf("%d\n", workspace[i]);
-
-//   //fill transpose with values and row indeces
-//   int w = 0;
-//   for ( int i = 0; i < matrix->rows; i++ )
-//   {
-//     for ( int j = matrix->row_ptr[i]; j < matrix->row_ptr[i + 1]; j++ )
-//     {
-//       //Place matrix(i,j) into transpose(j,i)
-//       w = workspace[matrix->col_ind[j]]++;
-//       transpose->row_ptr[w] = i;
-//       transpose->val[w] = matrix->val[j];
-//     }
-//   }
-
-//   free( workspace );
-//   return transpose;
-// }
