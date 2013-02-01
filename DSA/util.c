@@ -500,14 +500,17 @@ int countLines(char* string)
     int i = 0;
     while (string != NULL)
     {
-        if (string[0] != '\0') {
+        if (*string == '\0')
+        {
+            break;
+        }
+        if (*string == '\n')
+        {
             string++;
-            if (isalnum(string[0])) {
-                i += 1;
-            }
+            continue;
         }
         else {
-            break;
+            i++;
         }
         string = strchr(string, '\n');
     }
@@ -516,6 +519,8 @@ int countLines(char* string)
 
 /**
  * Create a matrix from a string
+ * 
+ * It is also possible to create the matrix for a triplet of arrays
  */
 Matrix* newMatrixFromString(char* str)
 {
@@ -523,11 +528,117 @@ Matrix* newMatrixFromString(char* str)
     char* head = str;
     int dims[] = {0, 0, 0, 0};
     int result = parseEntry(&head, dims);
+    if (result != 2) {
+        free(m);
+        return NULL;
+    }
     m->rows = dims[0];
     m->columns = dims[1];
     // Here we count the number of new lines to allocate the elements
-    return NULL;
+    m->quantity = countLines(head);
     
+    // Allocating the memory for the arrays
+    m->col_ind = calloc(m->quantity, sizeof(int));
+    m->row_ptr = calloc(m->rows + 1, sizeof(int));
+    m->val = calloc(m->quantity, sizeof(int));
+    
+    // Temporary array for sorting
+    int *row_ind = calloc(m->quantity, sizeof(int));
+    
+    // Ignore malformed entries for now
+    size_t j = 0;
+    while (head[0] != '\0') {
+        // Getting the numbers
+        result = parseEntry(&head, dims);
+        if (result != 3) {
+            continue;
+        }
+        
+        row_ind[j] = dims[0];
+        m->col_ind[j] = dims[1];
+        m->val[j] = dims[2];
+        
+        j += 1;
+    }
+    
+    // Sorting the arrays
+    
+    int *arr = row_ind;
+    int elements = m->quantity;
+#define  MAX_LEVELS  64
+    
+    int  piv, piv_v, piv_c, beg[MAX_LEVELS], end[MAX_LEVELS], L, R, swap ;
+    int i = 0;
+    
+    beg[0]=0; end[0]=elements;
+    while (i >= 0) {
+        L = beg[i];
+        R = end[i]-1;
+        
+        if (L < R) {
+            piv = arr[L];
+            piv_v = m->val[L];
+            piv_c = m->col_ind[L];
+            
+            while (L < R) {
+                while (arr[R] >= piv && L < R)
+                    R--;
+                if (L<R) {
+                    // Moving additional data around
+                    m->val[L] = m->val[R];
+                    m->col_ind[L] = m->col_ind[R];
+                    arr[L++] = arr[R];
+                }
+                while (arr[L] <= piv && L < R)
+                    L++;
+                if (L<R) {
+                    m->val[R] = m->val[L];
+                    m->col_ind[R] = m->col_ind[L];
+                    arr[R--] = arr[L];
+                }
+            }
+            
+            arr[L] = piv;
+            m->val[L] = piv_v;
+            m->col_ind[L] = piv_c;
+            
+            beg[i+1] = L+1;
+            end[i+1] = end[i];
+            end[i++] = L;
+            
+            if (end[i] - beg[i] > end[i-1] - beg[i-1]) {
+                swap = beg[i];
+                beg[i] = beg[i-1];
+                beg[i-1] = swap;
+                swap = end[i];
+                end[i] = end[i-1];
+                end[i-1] = swap;
+            }
+        }
+        else {
+            i--;
+        }
+    }
+    // The arrays are sorted row wise
+    // Compressing the rows
+    int cur_row = 0;
+    int* row_zero = &(m->row_ptr[1]);
+    for (i = 0; i < m->quantity; i++) {
+        while (cur_row < row_ind[i])
+        {
+            row_zero[cur_row++] = i;
+        }
+    }
+    // Padding the rest
+    while (cur_row < m->rows) {
+        row_zero[cur_row++] = i;
+    }
+    
+    // Writing to the last one
+    
+    // Freeing up the temporary array for sorting
+    free(row_ind);
+    return m;
 }
 
 // //It;s not transpose it's convert

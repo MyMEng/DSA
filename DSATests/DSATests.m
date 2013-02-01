@@ -92,13 +92,67 @@
                     "with additional last line\n"
                     "\n";
     char test5[] = "\n\n\n\nSome\n\nS\n\nL\n\n";
+    char test6[] =  "0,0,1\n"
+                    "1,1,1\n"
+                    "2,2,1\n";
     
     STAssertEquals(countLines(test1), 0, @"wrong count of lines");
     STAssertEquals(countLines(test2), 0, @"wrong count of lines");
     STAssertEquals(countLines(test3), 2, @"wrong count of lines");
     STAssertEquals(countLines(test4), 2, @"wrong count of lines");
     STAssertEquals(countLines(test5), 3, @"wrong count of lines");
+    STAssertEquals(countLines(test6), 3, @"wrong count of lines");
 }
 
+-(void)testMatrixCreation
+{
+    char identity[] =  "3,3\n"
+    "0,0,1\n"
+    "1,1,1\n"
+    "2,2,1\n";
+    
+    Matrix *m = newMatrixFromString(identity);
+    if (m == NULL){
+        STFail(@"Matrix creation problem");
+    } else {
+        STAssertEquals(m->rows, 3, @"Wrong number of rows");
+        STAssertEquals(m->columns, 3, @"Wrong number of cols");
+        STAssertEquals(m->quantity, 3, @"Wrong number of elements");
+        int* col = m->col_ind;
+        STAssertTrue(col[0] == 0 && col[1] == 1 && col[2] == 2, @"Wrong Columns");
+        int* r = m->row_ptr;
+        STAssertTrue(r[0] == 0 && r[1] == 1 && r[2] == 2 && r[3] == 3 , @"Wrong rows %d %d %d %d", r[0], r[1], r[2], r[3]);
+        freeMatrixMemory(m);
+    }
+}
+
+-(void)testAdvancedMatrixCreation
+{
+    char myMatrix[] =   "6,5\n"
+                        "0,1,3\n"
+                        "0,3,4\n"
+                        "1,5,10\n";
+    Matrix *m = newMatrixFromString(myMatrix);
+    if (m == NULL){
+        STFail(@"Matrix creation problem");
+    } else {
+        STAssertEquals(m->rows, 6, @"Wrong number of rows");
+        STAssertEquals(m->columns, 5, @"Wrong number of cols");
+        STAssertEquals(m->quantity, 3, @"Wrong number of elements");
+        int* col = m->col_ind;
+        STAssertTrue(col[0] == 1 && col[1] == 3 && col[2] == 5, @"Wrong Columns");
+        int* r = m->row_ptr;
+        STAssertEquals(r[0], 0, @"Wrong rows %d", r[0]);
+        STAssertEquals(r[1], 2, @"Wrong rows %d", r[1]);
+        STAssertEquals(r[2], 3, @"Wrong rows %d", r[2]);
+        STAssertEquals(r[3], 3, @"Wrong rows %d", r[3]);
+        STAssertEquals(r[4], 3, @"Wrong rows %d", r[4]);
+        STAssertEquals(r[5], 3, @"Wrong rows %d", r[5]);
+        STAssertEquals(r[6], 3, @"Wrong rows %d", r[6]);
+        
+        freeMatrixMemory(m);
+    }
+
+}
 
 @end

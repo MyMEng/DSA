@@ -7,13 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3B009A2316BB413700C1CCB2 /* DSATests.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BC9326A16B99D390063235E /* DSATests.m */; };
+		3B009A2416BB436E00C1CCB2 /* matrix.c in Sources */ = {isa = PBXBuildFile; fileRef = 3BC9323916B991C20063235E /* matrix.c */; };
+		3B009A2616BB471D00C1CCB2 /* file_load.c in Sources */ = {isa = PBXBuildFile; fileRef = 3B009A2516BB471D00C1CCB2 /* file_load.c */; };
+		3B009A2716BB471D00C1CCB2 /* file_load.c in Sources */ = {isa = PBXBuildFile; fileRef = 3B009A2516BB471D00C1CCB2 /* file_load.c */; };
 		3BC9323D16B991C20063235E /* matrix.c in Sources */ = {isa = PBXBuildFile; fileRef = 3BC9323916B991C20063235E /* matrix.c */; };
 		3BC9323E16B991C20063235E /* util.c in Sources */ = {isa = PBXBuildFile; fileRef = 3BC9323B16B991C20063235E /* util.c */; };
 		3BC9325C16B99D390063235E /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3BC9325B16B99D390063235E /* SenTestingKit.framework */; };
 		3BC9325E16B99D390063235E /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3BC9325D16B99D390063235E /* Cocoa.framework */; };
 		3BC9326816B99D390063235E /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3BC9326616B99D390063235E /* InfoPlist.strings */; };
-		3BC9326B16B99D390063235E /* DSATests.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BC9326A16B99D390063235E /* DSATests.m */; };
-		3BC9327116B9A4330063235E /* matrix.c in Sources */ = {isa = PBXBuildFile; fileRef = 3BC9323916B991C20063235E /* matrix.c */; };
 		3BC9327216B9A4360063235E /* util.c in Sources */ = {isa = PBXBuildFile; fileRef = 3BC9323B16B991C20063235E /* util.c */; };
 /* End PBXBuildFile section */
 
@@ -30,6 +32,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		3B009A2516BB471D00C1CCB2 /* file_load.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = file_load.c; sourceTree = "<group>"; };
+		3B009A2816BB4B7700C1CCB2 /* file_load.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = file_load.h; sourceTree = "<group>"; };
 		3BC9322D16B98F2B0063235E /* DSA */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "compiled.mach-o.executable"; path = DSA; sourceTree = BUILT_PRODUCTS_DIR; };
 		3BC9323916B991C20063235E /* matrix.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = matrix.c; sourceTree = "<group>"; };
 		3BC9323A16B991C20063235E /* matrix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = matrix.h; sourceTree = "<group>"; };
@@ -112,6 +116,8 @@
 				3BC9323916B991C20063235E /* matrix.c */,
 				3BC9323A16B991C20063235E /* matrix.h */,
 				3BC9323B16B991C20063235E /* util.c */,
+				3B009A2516BB471D00C1CCB2 /* file_load.c */,
+				3B009A2816BB4B7700C1CCB2 /* file_load.h */,
 				3BC9323C16B991C20063235E /* util.h */,
 			);
 			path = DSA;
@@ -281,6 +287,7 @@
 			files = (
 				3BC9323D16B991C20063235E /* matrix.c in Sources */,
 				3BC9323E16B991C20063235E /* util.c in Sources */,
+				3B009A2616BB471D00C1CCB2 /* file_load.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -288,9 +295,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3BC9326B16B99D390063235E /* DSATests.m in Sources */,
-				3BC9327116B9A4330063235E /* matrix.c in Sources */,
+				3B009A2416BB436E00C1CCB2 /* matrix.c in Sources */,
 				3BC9327216B9A4360063235E /* util.c in Sources */,
+				3B009A2316BB413700C1CCB2 /* DSATests.m in Sources */,
+				3B009A2716BB471D00C1CCB2 /* file_load.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -426,6 +434,7 @@
 				3BC9323816B98F2B0063235E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		3BC9326D16B99D390063235E /* Build configuration list for PBXNativeTarget "DSATests" */ = {
 			isa = XCConfigurationList;
@@ -434,6 +443,7 @@
 				3BC9326F16B99D390063235E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

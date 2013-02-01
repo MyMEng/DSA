@@ -75,4 +75,6 @@ Matrix *add( Matrix *A, Matrix *B );
 
 int parseEntry(char **string, int *dims);
 int countLines(char* string);
+int compareMatrices(const Matrix* a, const Matrix* b);
+Matrix* newMatrixFromString(char* str);
 #endif
