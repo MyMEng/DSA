@@ -25,13 +25,13 @@ Perform stage 1:
 void stage1( char* X_name, unsigned int r, unsigned int c )
 {
 
-  char tempstr[BUFFSIZE];
-  unsigned int tempint[2];
+  //char tempstr[BUFFSIZE];
+  //unsigned int tempint[2];
   time_t t1, t2;
   t1 = clock(  );
 
   //number of non-0 elements in matrix
-  unsigned int n = 0;
+  //unsigned int n = 0;
 
 //  //Read the file; "r"-read only
 //  FILE *file = fopen( X_name, "r" );
@@ -332,8 +332,8 @@ void stage5( char* R_name, char* X_name[], int l )
     fclose( fileY );
 
   }
-  unsigned int tempint[2] = {totalRow, totalCol};
-  Matrix *product = makeDataStructure( totalElem, tempint, 'r' );
+  //unsigned int tempint[2] = {totalRow, totalCol};
+  //Matrix *product = makeDataStructure( totalElem, tempint, 'r' );
 
 
   //Save effect of multiplying each pair in 'product' matrix,
