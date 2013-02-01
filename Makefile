@@ -1,5 +1,5 @@
 CC       = gcc
-CC_FLAGS = -Wall -m64 -std=gnu99 -march=core2 -O3
+CC_FLAGS = -Wall -m64 -std=gnu99 -march=core2 -O3 #-ggdb3
 CC_PATHS = 
 CC_LIBS  = 
 

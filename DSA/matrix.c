@@ -69,7 +69,7 @@ void stage1( char* X_name, unsigned int r, unsigned int c )
 Perform stage 2:
 
 - given a matrix X         stored   in a file  named by X_name,
-- compute R = X^T, i.e., the transpose of X, 
+- compute R = X^T, i.e., the transpose of X,
 - then                     store  R in a file  named by R_name.
 */
 
@@ -245,14 +245,14 @@ void stage4( char* R_name, char* X_name, char* Y_name )
   //t1 = clock(  );
 
   //If dimmensions of matrices are correct sum them
-  
-  
+
+
   //od kuby
-   Matrix* mxA = load_file(X_name);
    Matrix* mxB = load_file(Y_name);
-  
-  
-  
+   Matrix* mxA = load_file(X_name);
+
+
+
   Matrix *product = NULL;
   if( productDim( mxA, mxB ) )
   {
