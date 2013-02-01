@@ -88,9 +88,9 @@ void reallocMatrix( Matrix *A, Matrix *B, char c );
 
 //Matrix *chainMultiply( Matrix *A, Matrix *B, Matrix *product )
 
-int parseEntry(char **string, int *dims);
-int countLines(char* string);
-int compareMatrices(const Matrix* a, const Matrix* b);
-Matrix* newMatrixFromString(char* str);
-Matrix* newMatrix();
+int parseEntry( char **string, int *dims );
+int countLines( char *string );
+int compareMatrices( Matrix *a, Matrix *b );
+Matrix *newMatrixFromString( char* str );
+Matrix *newMatrix(  );
 #endif
