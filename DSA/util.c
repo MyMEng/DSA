@@ -32,12 +32,12 @@ void checkMem( void *check )
   }
 }
 
-void fillWithNo(int *tmpint, char *tmpstr)
+void fillWithNo( unsigned int *tmpint, int *val, char *tmpstr )
 {
   //How many arguments were read
   int id = 0;
 
-  id = sscanf ( tmpstr, "%d,%d,%d/n", &tmpint[0], &tmpint[1], &tmpint[2]);
+  id = sscanf( tmpstr, "%d,%d,%d/n", &tmpint[0], &tmpint[1], val);
   //Accept ony if 2 or 3 elements have been read(valid file formatting) 
   if( id != 3  )
   {
@@ -101,7 +101,8 @@ Matrix* makeDataStructure( unsigned int n, unsigned int *tempint, char c )
 void organiseData( Matrix *matrix, FILE *file, char c )
 {
   char tempchar[BUFFSIZE];
-  int tempint[3];
+  unsigned int tempint[2];
+  int val = 0;
 
   //Current element in row
   unsigned int cn = 0;
@@ -117,13 +118,13 @@ void organiseData( Matrix *matrix, FILE *file, char c )
     on = cn;
     while( fscanf( file, "%s\n", tempchar ) != EOF )
     {
-      fillWithNo( tempint, tempchar );
+      fillWithNo( tempint, &val, tempchar );
       //printf("%d | %d | %d\n", tempint[0], tempint[1], tempint[2]);
 
       if( tempint[0] == i )
       {
        matrix->col_ind[cn] = tempint[1];
-       matrix->val[cn] = tempint[2];
+       matrix->val[cn] = val;
        //printf("%d | %d\n", matrix->col_ind[cn], matrix->val[cn]);
        cn++;
       }
@@ -304,6 +305,8 @@ Matrix* transposeMatrix( Matrix *matrix )
   unsigned int *workspace = calloc( matrix->columns, sizeof( unsigned int ) );
   unsigned int temp[2] = {( matrix->columns ), ( matrix->rows )};
   Matrix *transpose = makeDataStructure( matrix->quantity, temp, 'T');
+  checkMem( workspace );
+
 
   //calculate collumn counts - compress columns | cumulative sum
   //
@@ -372,6 +375,8 @@ Matrix *add( Matrix *A, Matrix *B )
   Matrix *sum = makeDataStructure( A->quantity + B->quantity, temp, 'r');
   unsigned int *workspaceA = calloc( A->columns, sizeof( unsigned int ) );
   int *workspaceB = calloc( B->columns, sizeof( int ) );
+  checkMem( workspaceA );
+  checkMem( workspaceB );
 
   for ( unsigned int i = 0; i < A->rows; i++ )
   {
@@ -475,6 +480,8 @@ void reallocMatrix( Matrix *A, Matrix *B, char c )
     B->col_ind = newCol;
     B->quantity = 2 * B->quantity;
 
+    //printf("Realoc completed\n");
+
     free( currentValues );
     free( currentCol ); 
 
@@ -529,6 +536,8 @@ Matrix *multiply( Matrix *A, Matrix *B )
   Matrix *product = makeDataStructure( A->quantity + B->quantity, temp, 'r');
   unsigned int *workspaceA = calloc( A->columns, sizeof( unsigned int ) );
   int *workspaceB = calloc( B->columns, sizeof( int ) );
+  checkMem( workspaceA );
+  checkMem( workspaceB );
   
   for ( unsigned int i = 0; i < A->rows; i++ )
   {

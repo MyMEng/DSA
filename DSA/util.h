@@ -37,13 +37,13 @@ void freeMatrixMemory( Matrix *mx );
 void checkMem( void *check );
 
 //Get ints from string of chars
-void fillWithNo(int *tmpint, char *tmpstr);
+void fillWithNo( unsigned int *tmpint, int *val, char *tmpstr );
 
 //Prepare data structure for matrix with specified number of non-zero elements
-Matrix *makeDataStructure(unsigned int n, unsigned int *tempint, char c);
+Matrix *makeDataStructure( unsigned int n, unsigned int *tempint, char c );
 
 //Put data from file into data structure in organised maner
-void organiseData( Matrix *matrix, FILE *file, char c);
+void organiseData( Matrix *matrix, FILE *file, char c );
 
 //Write the matrix to the file
 void writeMatrixInFile( Matrix *matrix, char *fileName );

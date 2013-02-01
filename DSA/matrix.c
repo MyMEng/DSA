@@ -9,8 +9,6 @@
   multiple entries  V
   unsigned  int     V
 
-  //poprawic fill with nombers do unsigned integera
-
     Safe mode : optymalizacja wczytywamnia: reading with spaces,
     zastosuj regule wielu wejsc + testy
   */
@@ -24,7 +22,8 @@ Perform stage 1:
 - inspect X, i.e., print the element, row and column at row r, column c.
 */
 
-void stage1( char* X_name, unsigned int r, unsigned int c ) {
+void stage1( char* X_name, unsigned int r, unsigned int c )
+{
 
   char tempstr[BUFFSIZE];
   unsigned int tempint[2];
@@ -134,7 +133,8 @@ Perform stage 3:
 - then                     store  R in a file  named by R_name.
 */
 
-void stage3( char* R_name, char* X_name, char* Y_name ) {
+void stage3( char* R_name, char* X_name, char* Y_name )
+{
 
   char tempstrX[BUFFSIZE];
   unsigned int tempintX[2];
@@ -205,7 +205,8 @@ Perform stage 4:
 - then                     store  R in a file  named by R_name.
 */
 
-void stage4( char* R_name, char* X_name, char* Y_name ) {
+void stage4( char* R_name, char* X_name, char* Y_name )
+{
 
   char tempstrX[BUFFSIZE];
   unsigned int tempintX[2];
@@ -237,6 +238,10 @@ void stage4( char* R_name, char* X_name, char* Y_name ) {
 
   fclose( fileX );
   fclose( fileY );
+
+
+  //printf("Finihed reading\n");
+  //t1 = clock(  );
 
   //If dimmensions of matrices are correct sum them
   Matrix *product = NULL;
@@ -271,11 +276,101 @@ Perform stage 5:
 - then                     store  R in a file  named by R_name.
 */
 
-void stage5( char* R_name, char* X_name[], int l ) {
+void stage5( char* R_name, char* X_name[], int l )
+{
 
+  char tempstrX[BUFFSIZE];
+  unsigned int tempintX[2];
+  char tempstrY[BUFFSIZE];
+  unsigned int tempintY[2];
+  time_t t1, t2;
+  t1 = clock(  );
+
+  //number of non-0 elements in matrix
+  unsigned int nX = 0;
+  unsigned int nY = 0;
+
+  //Final dimmension of matrix
+  unsigned int totalRow = 0;
+  unsigned int totalCol = 0;
+  unsigned int totalElem = 0;
+
+
+  //Check from the very begining whether it makes sens to start multiplying
   //Calculate final dimmension and create such matrix
-  //
-  //Check from the very begining whether it makes sens to start multiplying it
+  for (int i = 1; i < l; i++)
+  {
+
+    //Read the file; "r"-read only
+    FILE *fileX = fopen( X_name[i - 1], "r" );
+    FILE *fileY = fopen( X_name[i], "r" );
+    if ( checkFile( fileX ) && checkFile( fileY ) )
+    {
+      initializeReading( fileX, &nX, tempintX, tempstrX );
+      initializeReading( fileY, &nY, tempintY, tempstrY );
+    }
+
+    if( tempintX[1] != tempintY[0] )
+    {
+      fprintf ( stderr, "Uncompatible dimmensions.\n" );
+      exit ( EXIT_FAILURE );
+    }
+
+    if (  i == 1 )
+    {
+      totalElem = nX + nY;
+      totalRow = tempintX[0];
+    } else if( i == l - 1 ) {
+      totalCol = tempintY[1];
+      totalElem += nY;
+    } else {
+      totalElem += nY;
+    }
+
+    fclose( fileX );
+    fclose( fileY );
+
+  }
+  unsigned int tempint[2] = {totalRow, totalCol};
+  Matrix *product = makeDataStructure( totalElem, tempint, 'r' );
+
+  //zapisuj wynik mnozenia od razu w produkcie ktory ma dopowiednie wymiary
+
+  //   //Allocate space for matrix | 'r' = row compressed form
+  //   Matrix *mxA = makeDataStructure( nX, tempintX, 'r' );
+  //   Matrix *mxB = makeDataStructure( nY, tempintY, 'r' );
+
+  //   //Read data into a structure and do not sort them
+  //   organiseData( mxA, fileX, 'T'/*'N'*/ );
+  //   organiseData( mxB, fileY, 'T'/*'N'*/ );
+
+  //   fclose( fileX );
+  //   fclose( fileY );
+
+  //   //If dimmensions of matrices are correct sum them
+  //   Matrix *product = NULL;
+  //   if( productDim( mxA, mxB ) )
+  //   {
+  //     product = multiply( mxA, mxB );
+  //   } else {
+  //       fprintf ( stderr, "Uncompatible dimmensions.\n" );
+  //       exit ( EXIT_FAILURE );
+  //   }
+
+  //   freeMatrixMemory( mxA );
+  //   freeMatrixMemory( mxB );
+
+
+  // //write transpose to a file
+  // writeMatrixInFile( product, R_name );
+
+  // //Free the memory after data structure
+  // freeMatrixMemory( product );
+
+  t2 = clock(  );
+
+  printf("number of non-empty lines: X=%d | Y=%d\nTime elapsed %.5fs\n",
+    nX, nY, ( difftime( t2, t1 ) / CLOCKS_PER_SEC ) );
 
 }
 
