@@ -7,13 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3B009A2316BB413700C1CCB2 /* DSATests.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BC9326A16B99D390063235E /* DSATests.m */; };
+		3B009A2416BB436E00C1CCB2 /* matrix.c in Sources */ = {isa = PBXBuildFile; fileRef = 3BC9323916B991C20063235E /* matrix.c */; };
+		3B009A2616BB471D00C1CCB2 /* file_load.c in Sources */ = {isa = PBXBuildFile; fileRef = 3B009A2516BB471D00C1CCB2 /* file_load.c */; };
+		3B009A2716BB471D00C1CCB2 /* file_load.c in Sources */ = {isa = PBXBuildFile; fileRef = 3B009A2516BB471D00C1CCB2 /* file_load.c */; };
+		3B009A2A16BB4CB600C1CCB2 /* set1-stage1.input in CopyFiles */ = {isa = PBXBuildFile; fileRef = 3BC9324116B995710063235E /* set1-stage1.input */; };
 		3BC9323D16B991C20063235E /* matrix.c in Sources */ = {isa = PBXBuildFile; fileRef = 3BC9323916B991C20063235E /* matrix.c */; };
 		3BC9323E16B991C20063235E /* util.c in Sources */ = {isa = PBXBuildFile; fileRef = 3BC9323B16B991C20063235E /* util.c */; };
 		3BC9325C16B99D390063235E /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3BC9325B16B99D390063235E /* SenTestingKit.framework */; };
 		3BC9325E16B99D390063235E /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3BC9325D16B99D390063235E /* Cocoa.framework */; };
 		3BC9326816B99D390063235E /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3BC9326616B99D390063235E /* InfoPlist.strings */; };
-		3BC9326B16B99D390063235E /* DSATests.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BC9326A16B99D390063235E /* DSATests.m */; };
-		3BC9327116B9A4330063235E /* matrix.c in Sources */ = {isa = PBXBuildFile; fileRef = 3BC9323916B991C20063235E /* matrix.c */; };
 		3BC9327216B9A4360063235E /* util.c in Sources */ = {isa = PBXBuildFile; fileRef = 3BC9323B16B991C20063235E /* util.c */; };
 /* End PBXBuildFile section */
 
@@ -24,12 +27,49 @@
 			dstPath = "";
 			dstSubfolderSpec = 6;
 			files = (
+				3B009A2A16BB4CB600C1CCB2 /* set1-stage1.input in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		3B009A2516BB471D00C1CCB2 /* file_load.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = file_load.c; sourceTree = "<group>"; };
+		3B009A2816BB4B7700C1CCB2 /* file_load.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = file_load.h; sourceTree = "<group>"; };
+		3B460BE716BB62AC004C006F /* set2-stage5.input_0 */ = {isa = PBXFileReference; lastKnownFileType = text; path = "set2-stage5.input_0"; sourceTree = "<group>"; };
+		3B460BE816BB62AC004C006F /* set2-stage5.input_1 */ = {isa = PBXFileReference; lastKnownFileType = text; path = "set2-stage5.input_1"; sourceTree = "<group>"; };
+		3B460BE916BB62AC004C006F /* set2-stage5.input_2 */ = {isa = PBXFileReference; lastKnownFileType = text; path = "set2-stage5.input_2"; sourceTree = "<group>"; };
+		3B460BEA16BB62AC004C006F /* set2-stage5.input_3 */ = {isa = PBXFileReference; lastKnownFileType = text; path = "set2-stage5.input_3"; sourceTree = "<group>"; };
+		3B460BEB16BB62AC004C006F /* set2-stage5.input_4 */ = {isa = PBXFileReference; lastKnownFileType = text; path = "set2-stage5.input_4"; sourceTree = "<group>"; };
+		3B460BEC16BB62AC004C006F /* set2-stage5.input_5 */ = {isa = PBXFileReference; lastKnownFileType = text; path = "set2-stage5.input_5"; sourceTree = "<group>"; };
+		3B460BED16BB62AC004C006F /* set3-stage5.input_0 */ = {isa = PBXFileReference; lastKnownFileType = text; path = "set3-stage5.input_0"; sourceTree = "<group>"; };
+		3B460BEE16BB62AC004C006F /* set3-stage5.input_1 */ = {isa = PBXFileReference; lastKnownFileType = text; path = "set3-stage5.input_1"; sourceTree = "<group>"; };
+		3B460BEF16BB62AC004C006F /* set3-stage5.input_2 */ = {isa = PBXFileReference; lastKnownFileType = text; path = "set3-stage5.input_2"; sourceTree = "<group>"; };
+		3B460BF016BB62AC004C006F /* set3-stage5.input_3 */ = {isa = PBXFileReference; lastKnownFileType = text; path = "set3-stage5.input_3"; sourceTree = "<group>"; };
+		3B460BF116BB62AC004C006F /* set3-stage5.input_4 */ = {isa = PBXFileReference; lastKnownFileType = text; path = "set3-stage5.input_4"; sourceTree = "<group>"; };
+		3B460BF216BB62AC004C006F /* set3-stage5.input_5 */ = {isa = PBXFileReference; lastKnownFileType = text; path = "set3-stage5.input_5"; sourceTree = "<group>"; };
+		3B460BF316BB62AC004C006F /* set3-stage5.input_6 */ = {isa = PBXFileReference; lastKnownFileType = text; path = "set3-stage5.input_6"; sourceTree = "<group>"; };
+		3B460BF416BB62AC004C006F /* set3-stage5.input_7 */ = {isa = PBXFileReference; lastKnownFileType = text; path = "set3-stage5.input_7"; sourceTree = "<group>"; };
+		3B460BF516BB62AC004C006F /* set4-stage5.input_0 */ = {isa = PBXFileReference; lastKnownFileType = text; path = "set4-stage5.input_0"; sourceTree = "<group>"; };
+		3B460BF616BB62AC004C006F /* set4-stage5.input_1 */ = {isa = PBXFileReference; lastKnownFileType = text; path = "set4-stage5.input_1"; sourceTree = "<group>"; };
+		3B460BF716BB62AD004C006F /* set4-stage5.input_2 */ = {isa = PBXFileReference; lastKnownFileType = text; path = "set4-stage5.input_2"; sourceTree = "<group>"; };
+		3B460BF816BB62AD004C006F /* set5-stage5.input_0 */ = {isa = PBXFileReference; lastKnownFileType = text; path = "set5-stage5.input_0"; sourceTree = "<group>"; };
+		3B460BF916BB62AD004C006F /* set5-stage5.input_1 */ = {isa = PBXFileReference; lastKnownFileType = text; path = "set5-stage5.input_1"; sourceTree = "<group>"; };
+		3B460BFA16BB62AD004C006F /* set5-stage5.input_2 */ = {isa = PBXFileReference; lastKnownFileType = text; path = "set5-stage5.input_2"; sourceTree = "<group>"; };
+		3B460BFB16BB62AD004C006F /* set5-stage5.input_3 */ = {isa = PBXFileReference; lastKnownFileType = text; path = "set5-stage5.input_3"; sourceTree = "<group>"; };
+		3B460BFC16BB62AD004C006F /* set5-stage5.input_4 */ = {isa = PBXFileReference; lastKnownFileType = text; path = "set5-stage5.input_4"; sourceTree = "<group>"; };
+		3B460BFD16BB62AD004C006F /* set5-stage5.input_5 */ = {isa = PBXFileReference; lastKnownFileType = text; path = "set5-stage5.input_5"; sourceTree = "<group>"; };
+		3B460BFE16BB62AD004C006F /* set5-stage5.input_6 */ = {isa = PBXFileReference; lastKnownFileType = text; path = "set5-stage5.input_6"; sourceTree = "<group>"; };
+		3B460BFF16BB62AD004C006F /* set5-stage5.input_7 */ = {isa = PBXFileReference; lastKnownFileType = text; path = "set5-stage5.input_7"; sourceTree = "<group>"; };
+		3B460C0016BB62AD004C006F /* set6-stage5.input_0 */ = {isa = PBXFileReference; lastKnownFileType = text; path = "set6-stage5.input_0"; sourceTree = "<group>"; };
+		3B460C0116BB62AD004C006F /* set6-stage5.input_1 */ = {isa = PBXFileReference; lastKnownFileType = text; path = "set6-stage5.input_1"; sourceTree = "<group>"; };
+		3B460C0216BB62AD004C006F /* set6-stage5.input_2 */ = {isa = PBXFileReference; lastKnownFileType = text; path = "set6-stage5.input_2"; sourceTree = "<group>"; };
+		3B460C0316BB62AD004C006F /* set6-stage5.input_3 */ = {isa = PBXFileReference; lastKnownFileType = text; path = "set6-stage5.input_3"; sourceTree = "<group>"; };
+		3B460C0416BB62AD004C006F /* set6-stage5.input_4 */ = {isa = PBXFileReference; lastKnownFileType = text; path = "set6-stage5.input_4"; sourceTree = "<group>"; };
+		3B460C0516BB62AD004C006F /* set6-stage5.input_5 */ = {isa = PBXFileReference; lastKnownFileType = text; path = "set6-stage5.input_5"; sourceTree = "<group>"; };
+		3B460C0616BB62AD004C006F /* set6-stage5.input_6 */ = {isa = PBXFileReference; lastKnownFileType = text; path = "set6-stage5.input_6"; sourceTree = "<group>"; };
+		3B460C0716BB62AD004C006F /* set6-stage5.input_7 */ = {isa = PBXFileReference; lastKnownFileType = text; path = "set6-stage5.input_7"; sourceTree = "<group>"; };
+		3B460C0816BB62AD004C006F /* sets.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = sets.zip; sourceTree = "<group>"; };
 		3BC9322D16B98F2B0063235E /* DSA */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "compiled.mach-o.executable"; path = DSA; sourceTree = BUILT_PRODUCTS_DIR; };
 		3BC9323916B991C20063235E /* matrix.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = matrix.c; sourceTree = "<group>"; };
 		3BC9323A16B991C20063235E /* matrix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = matrix.h; sourceTree = "<group>"; };
@@ -86,9 +126,59 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3B460BE516BB62AC004C006F /* tests */ = {
+			isa = PBXGroup;
+			children = (
+				3B460BE616BB62AC004C006F /* sets */,
+				3B460C0816BB62AD004C006F /* sets.zip */,
+			);
+			path = tests;
+			sourceTree = "<group>";
+		};
+		3B460BE616BB62AC004C006F /* sets */ = {
+			isa = PBXGroup;
+			children = (
+				3B460BE716BB62AC004C006F /* set2-stage5.input_0 */,
+				3B460BE816BB62AC004C006F /* set2-stage5.input_1 */,
+				3B460BE916BB62AC004C006F /* set2-stage5.input_2 */,
+				3B460BEA16BB62AC004C006F /* set2-stage5.input_3 */,
+				3B460BEB16BB62AC004C006F /* set2-stage5.input_4 */,
+				3B460BEC16BB62AC004C006F /* set2-stage5.input_5 */,
+				3B460BED16BB62AC004C006F /* set3-stage5.input_0 */,
+				3B460BEE16BB62AC004C006F /* set3-stage5.input_1 */,
+				3B460BEF16BB62AC004C006F /* set3-stage5.input_2 */,
+				3B460BF016BB62AC004C006F /* set3-stage5.input_3 */,
+				3B460BF116BB62AC004C006F /* set3-stage5.input_4 */,
+				3B460BF216BB62AC004C006F /* set3-stage5.input_5 */,
+				3B460BF316BB62AC004C006F /* set3-stage5.input_6 */,
+				3B460BF416BB62AC004C006F /* set3-stage5.input_7 */,
+				3B460BF516BB62AC004C006F /* set4-stage5.input_0 */,
+				3B460BF616BB62AC004C006F /* set4-stage5.input_1 */,
+				3B460BF716BB62AD004C006F /* set4-stage5.input_2 */,
+				3B460BF816BB62AD004C006F /* set5-stage5.input_0 */,
+				3B460BF916BB62AD004C006F /* set5-stage5.input_1 */,
+				3B460BFA16BB62AD004C006F /* set5-stage5.input_2 */,
+				3B460BFB16BB62AD004C006F /* set5-stage5.input_3 */,
+				3B460BFC16BB62AD004C006F /* set5-stage5.input_4 */,
+				3B460BFD16BB62AD004C006F /* set5-stage5.input_5 */,
+				3B460BFE16BB62AD004C006F /* set5-stage5.input_6 */,
+				3B460BFF16BB62AD004C006F /* set5-stage5.input_7 */,
+				3B460C0016BB62AD004C006F /* set6-stage5.input_0 */,
+				3B460C0116BB62AD004C006F /* set6-stage5.input_1 */,
+				3B460C0216BB62AD004C006F /* set6-stage5.input_2 */,
+				3B460C0316BB62AD004C006F /* set6-stage5.input_3 */,
+				3B460C0416BB62AD004C006F /* set6-stage5.input_4 */,
+				3B460C0516BB62AD004C006F /* set6-stage5.input_5 */,
+				3B460C0616BB62AD004C006F /* set6-stage5.input_6 */,
+				3B460C0716BB62AD004C006F /* set6-stage5.input_7 */,
+			);
+			path = sets;
+			sourceTree = "<group>";
+		};
 		3BC9322416B98F2B0063235E = {
 			isa = PBXGroup;
 			children = (
+				3B460BE516BB62AC004C006F /* tests */,
 				3BC9323F16B995710063235E /* input */,
 				3BC9322F16B98F2B0063235E /* DSA */,
 				3BC9326316B99D390063235E /* DSATests */,
@@ -112,6 +202,8 @@
 				3BC9323916B991C20063235E /* matrix.c */,
 				3BC9323A16B991C20063235E /* matrix.h */,
 				3BC9323B16B991C20063235E /* util.c */,
+				3B009A2516BB471D00C1CCB2 /* file_load.c */,
+				3B009A2816BB4B7700C1CCB2 /* file_load.h */,
 				3BC9323C16B991C20063235E /* util.h */,
 			);
 			path = DSA;
@@ -281,6 +373,7 @@
 			files = (
 				3BC9323D16B991C20063235E /* matrix.c in Sources */,
 				3BC9323E16B991C20063235E /* util.c in Sources */,
+				3B009A2616BB471D00C1CCB2 /* file_load.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -288,9 +381,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3BC9326B16B99D390063235E /* DSATests.m in Sources */,
-				3BC9327116B9A4330063235E /* matrix.c in Sources */,
+				3B009A2416BB436E00C1CCB2 /* matrix.c in Sources */,
 				3BC9327216B9A4360063235E /* util.c in Sources */,
+				3B009A2316BB413700C1CCB2 /* DSATests.m in Sources */,
+				3B009A2716BB471D00C1CCB2 /* file_load.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -426,6 +520,7 @@
 				3BC9323816B98F2B0063235E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		3BC9326D16B99D390063235E /* Build configuration list for PBXNativeTarget "DSATests" */ = {
 			isa = XCConfigurationList;
@@ -434,6 +529,7 @@
 				3BC9326F16B99D390063235E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

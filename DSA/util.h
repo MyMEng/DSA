@@ -63,7 +63,7 @@ void initializeReading( FILE *file, unsigned int *num, unsigned int *tempint,
 	char *tempstr );
 
 //Transpose matrix or may also serve as transformer from compresed row form to
-//compresed column form 
+//compresed column form
 //To calculate transpose we convert it to Compressed Column form and reed it as
 //compressed row form
 Matrix *transposeMatrix( Matrix *matrix );
@@ -88,4 +88,9 @@ void reallocMatrix( Matrix *A, Matrix *B, char c );
 
 //Matrix *chainMultiply( Matrix *A, Matrix *B, Matrix *product )
 
+int parseEntry(char **string, int *dims);
+int countLines(char* string);
+int compareMatrices(const Matrix* a, const Matrix* b);
+Matrix* newMatrixFromString(char* str);
+Matrix* newMatrix();
 #endif
