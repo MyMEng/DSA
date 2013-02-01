@@ -534,7 +534,7 @@ Matrix *multiply( Matrix *A, Matrix *B )
   unsigned int z = 0;
 
   Matrix *product = makeDataStructure( A->quantity + B->quantity, temp, 'r');
-  unsigned int *workspaceA = calloc( A->columns, sizeof( unsigned int ) );
+  unsigned int *workspaceA = calloc( B->columns, sizeof( unsigned int ) );
   int *workspaceB = calloc( B->columns, sizeof( int ) );
   checkMem( workspaceA );
   checkMem( workspaceB );
@@ -611,6 +611,121 @@ Matrix *multiply( Matrix *A, Matrix *B )
 
   return shrinkedProduct;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+//A is already full size with 
+Matrix *chainMultiply( Matrix *A, Matrix *B )
+{
+  unsigned int y = 0;
+
+  //flag that indicates that something summed up to 0
+  bool zeroProd = false;
+  int zeroQuantity = 0;
+
+  unsigned int z = 0;
+
+  unsigned int *workspaceA = calloc( A->columns, sizeof( unsigned int ) );
+  int *workspaceB = calloc( B->columns, sizeof( int ) );
+  checkMem( workspaceA );
+  checkMem( workspaceB );
+  
+  for ( unsigned int i = 0; i < A->rows; i++ )
+  {
+
+    //check for memory realocation
+    if ( z + product->columns > product->quantity )
+    {
+      reallocMatrix( product, product, '>' );
+    }
+
+    product->row_ptr[i] = y;
+
+    for ( unsigned int j = A->row_ptr[i]; j < A->row_ptr[i + 1]; j++ )
+    {
+      for ( unsigned int k = B->row_ptr[A->col_ind[j]];
+        k < B->row_ptr[A->col_ind[j] + 1]; k++ )
+      {
+        if ( workspaceA[B->col_ind[k]] <= i )
+        {
+          workspaceA[B->col_ind[k]] = i + 1;
+          product->col_ind[y] = B->col_ind[k];
+          y++;
+          workspaceB[B->col_ind[k]] = A->val[j] * B->val[k];
+        } else {
+          workspaceB[B->col_ind[k]] += A->val[j] * B->val[k];
+        }
+      }
+    }
+    for (int l = product->row_ptr[i]; l < y; l++)
+    {
+
+      if ( workspaceB[product->col_ind[l]]  == 0 )
+      {
+        zeroProd = true;
+        zeroQuantity++;
+      }
+
+      product->val[l] = workspaceB[product->col_ind[l]];
+
+      //count number of elements in new matrix
+      z++;
+
+    }
+
+    if ( zeroProd )
+    {
+
+      backwardinsertSort( product, product->row_ptr[i], y );
+
+      y -= zeroQuantity;
+
+      zeroQuantity = 0;
+      zeroProd = false;
+    }
+
+    //printf("Y is: %d\n", y);
+
+  }
+
+  product->row_ptr[A->rows] = y;
+  //for (int x = 0; x <= A->rows; ++x) printf("Rowptr: %d\n", product->row_ptr[x]);
+
+  Matrix *shrinkedProduct = makeDataStructure( y, temp, 'r');
+  reallocMatrix( product, shrinkedProduct, '<' );
+
+  free( workspaceA );
+  free( workspaceB );
+  freeMatrixMemory( product );
+
+  //for (int x = 0; x <= A->rows; ++x) printf("Rowptr: %d\n", shrinkedProduct->row_ptr[x]);  
+
+  return shrinkedProduct;
+}*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 bool checkOnMx( Matrix *matrix, unsigned int row, unsigned int column )
 {

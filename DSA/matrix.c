@@ -334,7 +334,9 @@ void stage5( char* R_name, char* X_name[], int l )
   unsigned int tempint[2] = {totalRow, totalCol};
   Matrix *product = makeDataStructure( totalElem, tempint, 'r' );
 
-  //zapisuj wynik mnozenia od razu w produkcie ktory ma dopowiednie wymiary
+
+  //Save effect of multiplying each pair in 'product' matrix,
+  //  which has right dimmensions
 
   //   //Allocate space for matrix | 'r' = row compressed form
   //   Matrix *mxA = makeDataStructure( nX, tempintX, 'r' );

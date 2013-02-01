@@ -86,4 +86,6 @@ bool checkOnMx( Matrix *matrix, unsigned int row, unsigned int column );
 //Realloc matrix if too much or too little space left
 void reallocMatrix( Matrix *A, Matrix *B, char c );
 
+//Matrix *chainMultiply( Matrix *A, Matrix *B, Matrix *product )
+
 #endif
