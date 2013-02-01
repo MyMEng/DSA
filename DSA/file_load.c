@@ -111,6 +111,9 @@ Matrix* load_file(const char* filename) {
         
         fclose(f);
         
+        // Sorting arrays
+        
+        
         // The parsing was finished, create the matrix
         m = newMatrixFromArrays(row_array, col_array, val_array, rows, cols, quantity);
         
@@ -127,8 +130,6 @@ Matrix* load_file(const char* filename) {
 }
 
 
-
-// Assume they are sorted
 Matrix* newMatrixFromArrays(int* rows, int* cols, int* vals, int rows_size, int cols_size, int quantity)
 {
     Matrix* m = newMatrix();
@@ -147,10 +148,63 @@ Matrix* newMatrixFromArrays(int* rows, int* cols, int* vals, int rows_size, int 
     memcpy(m->val, vals, quantity * sizeof(int));
     
     // The arrays are sorted row wise
+#define  MAX_LEVELS  64
+    
+    int  piv, piv_v, piv_c, beg[MAX_LEVELS], end[MAX_LEVELS], L, R, swap ;
+    int i = 0;
+    
+    beg[0]=0; end[0]=quantity;
+    while (i >= 0) {
+        L = beg[i];
+        R = end[i]-1;
+        
+        if (L < R) {
+            piv = rows[L];
+            piv_v = m->val[L];
+            piv_c = m->col_ind[L];
+            
+            while (L < R) {
+                while (rows[R] >= piv && L < R)
+                    R--;
+                if (L<R) {
+                    // Moving additional data around
+                    m->val[L] = m->val[R];
+                    m->col_ind[L] = m->col_ind[R];
+                    rows[L++] = rows[R];
+                }
+                while (rows[L] <= piv && L < R)
+                    L++;
+                if (L<R) {
+                    m->val[R] = m->val[L];
+                    m->col_ind[R] = m->col_ind[L];
+                    rows[R--] = rows[L];
+                }
+            }
+            
+            rows[L] = piv;
+            m->val[L] = piv_v;
+            m->col_ind[L] = piv_c;
+            
+            beg[i+1] = L+1;
+            end[i+1] = end[i];
+            end[i++] = L;
+            
+            if (end[i] - beg[i] > end[i-1] - beg[i-1]) {
+                swap = beg[i];
+                beg[i] = beg[i-1];
+                beg[i-1] = swap;
+                swap = end[i];
+                end[i] = end[i-1];
+                end[i-1] = swap;
+            }
+        }
+        else {
+            i--;
+        }
+    }
     // Compressing the rows
     int cur_row = 0;
-    int* row_zero = &(m->row_ptr[1]);
-    int i;
+    unsigned int* row_zero = &(m->row_ptr[1]);
     for (i = 0; i < m->quantity; i++) {
         while (cur_row < rows[i])
         {

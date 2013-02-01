@@ -182,7 +182,7 @@ void writeMatrixInFile( Matrix *matrix, char *fileName )
 void print( Matrix *matrix, unsigned int r, unsigned int c )
 {
 
-  if ( r < 0 || r >= matrix->rows || c < 0 || c >= matrix->columns )
+  if ( r >= matrix->rows || c >= matrix->columns )
   {
       fprintf ( stderr, "Unexpected index.\n" );
       exit ( EXIT_FAILURE );
@@ -515,7 +515,7 @@ void backwardinsertSort( Matrix *mx, unsigned int a, unsigned int b )
 
 bool productDim( Matrix *A, Matrix *B )
 {
-  if( ( A->columns == B->rows ) )
+  if(  A->columns == B->rows  )
   {
     return true;
   } else {
@@ -747,7 +747,9 @@ Matrix* newMatrixFromString(char* str)
     }
     
     // Sorting the arrays
-    
+    //  quickSort
+    //
+    //  This public-domain C implementation by Darel Rex Finley.
     int *arr = row_ind;
     int elements = m->quantity;
 #define  MAX_LEVELS  64
@@ -807,7 +809,7 @@ Matrix* newMatrixFromString(char* str)
     // The arrays are sorted row wise
     // Compressing the rows
     int cur_row = 0;
-    int* row_zero = &(m->row_ptr[1]);
+    unsigned int* row_zero = &(m->row_ptr[1]);
     for (i = 0; i < m->quantity; i++) {
         while (cur_row < row_ind[i])
         {
