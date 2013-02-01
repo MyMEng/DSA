@@ -39,7 +39,7 @@ void fillWithNo( unsigned int *tmpint, int *val, char *tmpstr )
   int id = 0;
 
   id = sscanf( tmpstr, "%d,%d,%d/n", &tmpint[0], &tmpint[1], val);
-  //Accept ony if 2 or 3 elements have been read(valid file formatting) 
+  //Accept ony if 2 or 3 elements have been read(valid file formatting)
   if( id != 3  )
   {
     fprintf( stderr, "Bad file formatting.\n" );
@@ -93,7 +93,7 @@ Matrix* makeDataStructure( unsigned int n, unsigned int *tempint, char c )
     sparseMx->row_ptr = calloc( sparseMx->columns + 1, sizeof( unsigned int ) );
     sparseMx->col_ind = calloc( sparseMx->quantity, sizeof( unsigned int ) );
   }
-  
+
   checkMem( sparseMx->row_ptr );
   checkMem( sparseMx->col_ind );
   return sparseMx;
@@ -155,10 +155,10 @@ void writeMatrixInFile( Matrix *matrix, char *fileName )
     exit ( EXIT_FAILURE );
   } else {
     fprintf( file, "%d,%d\n", matrix->rows, matrix->columns );
-    
+
     unsigned int b = 0;
     unsigned int a = 0;
-    
+
     //Overflow?
     for ( unsigned int i = 0; i < matrix->rows; i++ )
     {
@@ -224,7 +224,7 @@ void print( Matrix *matrix, unsigned int r, unsigned int c )
       } else {
         printf( ",0" );
       }
-      
+
     }
     printf( "\n" );
   }
@@ -235,7 +235,7 @@ void print( Matrix *matrix, unsigned int r, unsigned int c )
     int tempcol;
 
     //Overflow?
-    
+
     tempcol = 0;
     for ( unsigned int j = matrix->row_ptr[0]; j < matrix->row_ptr[1]; j++ )
     {
@@ -246,7 +246,7 @@ void print( Matrix *matrix, unsigned int r, unsigned int c )
           }
     }
     printf( "%d", tempcol );
-    
+
     for ( unsigned int i = 1; i < matrix->rows; i++ )
     {
       y = matrix->row_ptr[i + 1];
@@ -484,7 +484,7 @@ void reallocMatrix( Matrix *A, Matrix *B, char c )
     //printf("Realoc completed\n");
 
     free( currentValues );
-    free( currentCol ); 
+    free( currentCol );
 
   }
 
@@ -539,7 +539,7 @@ Matrix *multiply( Matrix *A, Matrix *B )
   int *workspaceB = calloc( B->columns, sizeof( int ) );
   checkMem( workspaceA );
   checkMem( workspaceB );
-  
+
   for ( unsigned int i = 0; i < A->rows; i++ )
   {
 
@@ -608,7 +608,7 @@ Matrix *multiply( Matrix *A, Matrix *B )
   free( workspaceB );
   freeMatrixMemory( product );
 
-  //for (int x = 0; x <= A->rows; ++x) printf("Rowptr: %d\n", shrinkedProduct->row_ptr[x]);  
+  //for (int x = 0; x <= A->rows; ++x) printf("Rowptr: %d\n", shrinkedProduct->row_ptr[x]);
 
   return shrinkedProduct;
 }
@@ -617,46 +617,49 @@ Matrix *multiply( Matrix *A, Matrix *B )
 /**
  * Create an empty matrix
  */
-Matrix* newMatrix() {
-    Matrix* new = malloc(sizeof(Matrix));
+Matrix *newMatrix(  )
+{
+    Matrix *new = malloc( sizeof( Matrix ) );
     new->col_ind = NULL;
     new->row_ptr = NULL;
     new->val = NULL;
     new->columns = 0;
     new->quantity = 0;
     new->rows = 0;
-    
+
     return new;
 }
 
 /**
  * Create a matrix with given dimensions
  */
-Matrix* newMatrixWithDim(int columns, int rows) {
-    Matrix* new = newMatrix();
+Matrix *newMatrixWithDim( int columns, int rows )
+{
+    Matrix *new = newMatrix(  );
     new->rows = rows;
     new->columns = columns;
-    
+
     return new;
 }
 
-int parseEntry(char **string, int *dims)
+int parseEntry( char **string, int *dims )
 {
     //How many arguments were read
     int id = 0;
     char *start = *string;
     char *header = NULL;
-    if (**string == '\0') {
+    if ( **string == '\0' )
+    {
         return id;
     }
     // Splitting the string in two
-    header = strtok_r(start, "\n", string);
-    
-    id = sscanf(header, "%d,%d,%d", &dims[0], &dims[1], &dims[2]);
-    
+    header = strtok_r( start, "\n", string );
+
+    id = sscanf( header, "%d,%d,%d", &dims[0], &dims[1], &dims[2] );
+
     // Need to return the error
-//    if (*string == NULL)
-//        *string = header;
+    //    if (*string == NULL)
+    //        *string = header;
 
     return id;
 }
@@ -664,88 +667,90 @@ int parseEntry(char **string, int *dims)
 /**
  * Compaing two matrices, assuming they are sorted
  */
-int compareMatrices(const Matrix* a, const Matrix* b)
+int compareMatrices( Matrix* a, Matrix* b )
 {
-    if (a->rows != b->rows) return 0;
-    if (a->columns != b->columns) return 0;
-    if (a->quantity != b->quantity) return 0;
+    if ( a->rows != b->rows ) return 0;
+    if ( a->columns != b->columns ) return 0;
+    if ( a->quantity != b->quantity ) return 0;
     int i;
-    for (i = 0; i < a->quantity; i++) {
-        if (a->col_ind[i] != b->col_ind[i]) return 0;
-        if (a->val[i] != b->val[i]) return 0;
+    for ( i = 0; i < a->quantity; i++ ) {
+        if ( a->col_ind[i] != b->col_ind[i] ) return 0;
+        if ( a->val[i] != b->val[i] ) return 0;
     }
-    for (i = 0; i < a->rows + 1; i++) {
-        if (a->row_ptr[i] != b->row_ptr[i]) return 0;
+    for ( i = 0; i < a->rows + 1; i++ ) {
+        if ( a->row_ptr[i] != b->row_ptr[i] ) return 0;
     }
     return 1;
 }
 
-int countLines(char* string)
+int countLines( char *string )
 {
     int i = 0;
-    while (string != NULL)
+    while ( string != NULL )
     {
-        if (*string == '\0')
+        if ( *string == '\0' )
         {
             break;
         }
-        if (*string == '\n')
+        if ( *string == '\n' )
         {
             string++;
             continue;
-        }
-        else {
+        } else {
             i++;
         }
-        string = strchr(string, '\n');
+        string = strchr( string, '\n' );
     }
     return i;
 }
 
 /**
  * Create a matrix from a string
- * 
+ *
  * It is also possible to create the matrix for a triplet of arrays
  */
-Matrix* newMatrixFromString(char* str)
+Matrix* newMatrixFromString( char *str )
 {
-    Matrix* m = newMatrix();
-    char* head = str;
+    Matrix *m = newMatrix(  );
+    char *head = str;
     int dims[] = {0, 0, 0, 0};
-    int result = parseEntry(&head, dims);
-    if (result != 2) {
-        free(m);
+    int result = parseEntry( &head, dims );
+    if ( result != 2 )
+    {
+        free( m );
         return NULL;
     }
     m->rows = dims[0];
     m->columns = dims[1];
     // Here we count the number of new lines to allocate the elements
-    m->quantity = countLines(head);
-    
+    m->quantity = countLines( head );
+
     // Allocating the memory for the arrays
-    m->col_ind = calloc(m->quantity, sizeof(int));
-    m->row_ptr = calloc(m->rows + 1, sizeof(int));
-    m->val = calloc(m->quantity, sizeof(int));
-    
+    m->col_ind = calloc( m->quantity, sizeof( int ) );
+    m->row_ptr = calloc( m->rows + 1, sizeof( int ) );
+    m->val = calloc( m->quantity, sizeof( int ) );
+
     // Temporary array for sorting
-    int *row_ind = calloc(m->quantity, sizeof(int));
-    
+    int *row_ind = calloc( m->quantity, sizeof( int ) );
+
     // Ignore malformed entries for now
     size_t j = 0;
-    while (head[0] != '\0') {
+    while ( head[0] != '\0' )
+    {
         // Getting the numbers
-        result = parseEntry(&head, dims);
-        if (result != 3) {
+        result = parseEntry( &head, dims );
+        if ( result != 3 )
+        {
             continue;
         }
-        
+
         row_ind[j] = dims[0];
         m->col_ind[j] = dims[1];
         m->val[j] = dims[2];
-        
+
         j += 1;
     }
-    
+
     // Sorting the arrays
     //  quickSort
     //
@@ -753,47 +758,56 @@ Matrix* newMatrixFromString(char* str)
     int *arr = row_ind;
     int elements = m->quantity;
 #define  MAX_LEVELS  64
-    
-    int  piv, piv_v, piv_c, beg[MAX_LEVELS], end[MAX_LEVELS], L, R, swap ;
+
+    int  piv, piv_v, piv_c, beg[MAX_LEVELS], end[MAX_LEVELS], L, R, swap;
     int i = 0;
-    
-    beg[0]=0; end[0]=elements;
-    while (i >= 0) {
+
+    beg[0] = 0;
+    end[0] = elements;
+    while(i >= 0)
+    {
         L = beg[i];
-        R = end[i]-1;
-        
-        if (L < R) {
+        R = end[i] - 1;
+
+        if( L < R )
+        {
             piv = arr[L];
             piv_v = m->val[L];
             piv_c = m->col_ind[L];
-            
-            while (L < R) {
-                while (arr[R] >= piv && L < R)
+
+            while( L < R )
+            {
+                while( arr[R] >= piv && L < R )
+                {
                     R--;
-                if (L<R) {
+                }
+                if( L<R )
+                {
                     // Moving additional data around
                     m->val[L] = m->val[R];
                     m->col_ind[L] = m->col_ind[R];
                     arr[L++] = arr[R];
                 }
-                while (arr[L] <= piv && L < R)
+                while( arr[L] <= piv && L < R )
                     L++;
-                if (L<R) {
+                if( L<R )
+                {
                     m->val[R] = m->val[L];
                     m->col_ind[R] = m->col_ind[L];
                     arr[R--] = arr[L];
                 }
             }
-            
+
             arr[L] = piv;
             m->val[L] = piv_v;
             m->col_ind[L] = piv_c;
-            
+
             beg[i+1] = L+1;
             end[i+1] = end[i];
             end[i++] = L;
-            
-            if (end[i] - beg[i] > end[i-1] - beg[i-1]) {
+
+            if( end[i] - beg[i] > end[i-1] - beg[i-1] )
+            {
                 swap = beg[i];
                 beg[i] = beg[i-1];
                 beg[i-1] = swap;
@@ -801,8 +815,7 @@ Matrix* newMatrixFromString(char* str)
                 end[i] = end[i-1];
                 end[i-1] = swap;
             }
-        }
-        else {
+        } else {
             i--;
         }
     }
@@ -810,21 +823,22 @@ Matrix* newMatrixFromString(char* str)
     // Compressing the rows
     int cur_row = 0;
     unsigned int* row_zero = &(m->row_ptr[1]);
-    for (i = 0; i < m->quantity; i++) {
-        while (cur_row < row_ind[i])
+    for( i = 0; i < m->quantity; i++ )
+    {
+        while( cur_row < row_ind[i] )
         {
             row_zero[cur_row++] = i;
         }
     }
     // Padding the rest
-    while (cur_row < m->rows) {
+    while ( cur_row < m->rows ) {
         row_zero[cur_row++] = i;
     }
-    
+
     // Writing to the last one
-    
+
     // Freeing up the temporary array for sorting
-    free(row_ind);
+    free( row_ind );
     return m;
 }
 
@@ -834,7 +848,7 @@ Matrix* newMatrixFromString(char* str)
 
 
 /*
-//A is already full size with 
+//A is already full size with
 Matrix *chainMultiply( Matrix *A, Matrix *B )
 {
   unsigned int y = 0;
@@ -849,7 +863,7 @@ Matrix *chainMultiply( Matrix *A, Matrix *B )
   int *workspaceB = calloc( B->columns, sizeof( int ) );
   checkMem( workspaceA );
   checkMem( workspaceB );
-  
+
   for ( unsigned int i = 0; i < A->rows; i++ )
   {
 
@@ -918,7 +932,7 @@ Matrix *chainMultiply( Matrix *A, Matrix *B )
   free( workspaceB );
   freeMatrixMemory( product );
 
-  //for (int x = 0; x <= A->rows; ++x) printf("Rowptr: %d\n", shrinkedProduct->row_ptr[x]);  
+  //for (int x = 0; x <= A->rows; ++x) printf("Rowptr: %d\n", shrinkedProduct->row_ptr[x]);
 
   return shrinkedProduct;
 }*/
@@ -953,7 +967,7 @@ bool checkOnMx( Matrix *matrix, unsigned int row, unsigned int column )
 
 // //It;s not transpose it's convert
 // //
-// //na hama cisnij to w stara strukture i bedzie git ... hyba?? 
+// //na hama cisnij to w stara strukture i bedzie git ... hyba??
 // Matrix* transposeMatrix( Matrix *matrix )
 // {
 //   //allocate space
