@@ -77,4 +77,5 @@ int parseEntry(char **string, int *dims);
 int countLines(char* string);
 int compareMatrices(const Matrix* a, const Matrix* b);
 Matrix* newMatrixFromString(char* str);
+Matrix* newMatrix();
 #endif

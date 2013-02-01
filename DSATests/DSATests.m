@@ -9,7 +9,7 @@
 #import "DSATests.h"
 #import "matrix.h"
 #import "string.h"
-
+#import "file_load.h"
 @implementation DSATests
 
 - (void)setUp
@@ -24,12 +24,6 @@
     // Tear-down code here.
     
     [super tearDown];
-}
-
-- (void)testExample
-{
-
-    stage1("input/set1-stage1.input", 3, 3);
 }
 
 - (void)testSimpleParsing
@@ -155,4 +149,13 @@
 
 }
 
+-(void)testMatrixLoading
+{
+    Matrix* m = load_file("tests/sets/set2-stage5.input_5");
+    // 358,7628,23
+    STAssertEquals(m->rows, 7500, @"Wrong");
+    STAssertEquals(m->columns, 10000, @"Wring");
+    print(m, 358, 7628);
+    
+}
 @end

@@ -464,14 +464,17 @@ int parseEntry(char **string, int *dims)
     int id = 0;
     char *start = *string;
     char *header = NULL;
-    
-    
+    if (**string == '\0') {
+        return id;
+    }
     // Splitting the string in two
     header = strtok_r(start, "\n", string);
     
-    id = sscanf(header, "%d,%d,%d/n", &dims[0], &dims[1], &dims[2]);
+    id = sscanf(header, "%d,%d,%d", &dims[0], &dims[1], &dims[2]);
     
     // Need to return the error
+//    if (*string == NULL)
+//        *string = header;
 
     return id;
 }
