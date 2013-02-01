@@ -156,7 +156,7 @@ Matrix* newMatrixFromArrays(unsigned int* rows,unsigned int* cols, int* vals,
 #define  MAX_LEVELS  64
 
     int  piv, piv_v, piv_c, beg[MAX_LEVELS], end[MAX_LEVELS], L, R, swap ;
-    unsigned int i = 0;
+    int i = 0;
 
     beg[0]=0; end[0]=quantity;
     while (i >= 0) {
