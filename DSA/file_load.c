@@ -1,7 +1,3 @@
- //
-//  file_load.c
-//  DSA
-//
 #include "file_load.h"
 #include "util.h"
 #include <stdio.h>

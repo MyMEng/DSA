@@ -72,6 +72,11 @@ Any other documentation, notes or comments that you think are important
 	in sum if sum up to 0 I emove such record of matrix same in multiplication
 
 	GENERALly i was inspired by book which influenced my work significantly
+
+	/*
+  multiple entries  V
+  testy
+  */
 	]
 
 

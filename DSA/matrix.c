@@ -1,11 +1,3 @@
-/*
-  multiple entries  V
-  reading with spaces,
-  zastosuj regule wielu wejsc
-
-  testy
-  */
-
 #include "matrix.h"
 #include "file_load.h"
 /*
@@ -17,45 +9,9 @@ Perform stage 1:
 
 void stage1( char* X_name, unsigned int r, unsigned int c )
 {
-
-  //char tempstr[BUFFSIZE];
-  //unsigned int tempint[2];
-  time_t t1, t2;
-  t1 = clock(  );
-
-  //number of non-0 elements in matrix
-  //unsigned int n = 0;
-
-//  //Read the file; "r"-read only
-//  FILE *file = fopen( X_name, "r" );
-//  if( checkFile( file ) )
-//  {
-//   initializeReading( file, &n, tempint, tempstr );
-//  }
-//
-//  //Allocate space for matrix | 'r' = row compressed form
-//  Matrix *matrixInstance = makeDataStructure(n, tempint, 'r');
-//
-//  //Read data into a structure and sort them
-//  organiseData( matrixInstance, file, 'N' );
-
   Matrix* matrixInstance = load_file(X_name);
-  //Data rerieval
   print(matrixInstance, r, c);
-
-  //printf("%s\n", ( checkOnMx( matrixInstance, 1, 3 ) ) ? "true" : "false" );
-  //printf("%s\n", ( checkOnMx( matrixInstance, 4, 1 ) ) ? "true" : "false" );
-  //writeMatrixInFile( matrixInstance, "LOL.txt" );
-
-  //Free the memory after data structure
   freeMatrixMemory( matrixInstance );
-
-//  fclose( file );
-
-  t2 = clock(  );
-  printf("number of non-empty lines: %i\nTime elapsed %.5fs\n",
-    matrixInstance->quantity, ( difftime( t2, t1 ) / CLOCKS_PER_SEC ) );
-
 }
 
 /*
