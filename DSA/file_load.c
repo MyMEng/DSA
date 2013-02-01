@@ -134,8 +134,8 @@ Matrix *load_file( char *filename )
 }
 
 
-Matrix* newMatrixFromArrays( int* rows, int* cols, int* vals, int rows_size,
-  int cols_size, int quantity )
+Matrix* newMatrixFromArrays(unsigned int* rows,unsigned int* cols, int* vals,
+    unsigned int rows_size, unsigned int cols_size,unsigned int quantity )
 {
     Matrix* m = newMatrix(  );
     m->rows = rows_size;

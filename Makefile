@@ -5,7 +5,7 @@ CC_LIBS  =
 
 all : matrix  
 
-matrix : $(wildcard matrix.[ch] util.[ch])
+matrix : $(wildcard matrix.[ch] util.[ch] file_load.[ch])
 	@${CC} ${CC_FLAGS} ${CC_PATHS} -o ${@} $(filter %.c, ${^}) ${CC_LIBS}
 
 clean : 
